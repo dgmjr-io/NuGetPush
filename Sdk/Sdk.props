@@ -18,5 +18,6 @@
   <PropertyGroup>
     <NuGetConfigFile>$(MSBuildThisFileDirectory)../NuGet.config</NuGetConfigFile>  
     <DeleteGitHubPackageVersionScriptName>$(MSBuildThisFileDirectory)../Scripts/delete-github-package-version.ps1</DeleteGitHubPackageVersionScriptName>
+    <GitHubOrg />
   </PropertyGroup>
 </Project>

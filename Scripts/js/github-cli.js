@@ -46,89 +46,70 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
 exports.deletePackageAsync = exports.deletePackageVersionAsync = void 0;
-var node_fetch_1 = __importDefault(require("node-fetch"));
-function deletePackageVersionAsync(packageId, version, token) {
+var constants_1 = require("./constants");
+var core_1 = require("@octokit/core");
+var octokit = new core_1.Octokit({ auth: process.env.GITHUB_TOKEN });
+function deletePackageVersionAsync(orgId, packageId, version, token) {
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
             return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                    var versionsResult, response, versionId, deleteResponse, ex_1, ex_2;
-                    var _a;
-                    return __generator(this, function (_b) {
-                        switch (_b.label) {
+                    var versions, versionToDelete, versionId, deleteResponse, ex_1;
+                    var _a, _b;
+                    return __generator(this, function (_c) {
+                        switch (_c.label) {
                             case 0:
-                                versionsResult = undefined;
-                                console.log("Using GitHub API to delete package version...");
-                                _b.label = 1;
+                                if (token != undefined) {
+                                    octokit = new core_1.Octokit({ auth: token });
+                                }
+                                _c.label = 1;
                             case 1:
-                                _b.trys.push([1, 14, , 15]);
-                                return [4 /*yield*/, (0, node_fetch_1["default"])("https://api.github.com/user/packages/nuget/".concat(packageId, "/versions"), { headers: { Authorization: "Bearer ".concat(token), Accept: 'application/vnd.github+json' }, method: 'GET' })];
+                                _c.trys.push([1, 6, , 7]);
+                                return [4 /*yield*/, octokit.request("GET /orgs/{org}/packages/{package_type}/{package_name}/versions", {
+                                        org: orgId,
+                                        package_type: "nuget",
+                                        package_name: packageId,
+                                        headers: (_a = {},
+                                            _a[constants_1.GITHUB_API_VERSION_HEADER_NAME] = constants_1.GITHUB_API_VERSION,
+                                            _a.Accept = constants_1.GITHUB_API_RESPONSE_CONTENT_TYPE,
+                                            _a)
+                                    })];
                             case 2:
-                                response = _b.sent();
-                                if (!(response.status == 200)) return [3 /*break*/, 4];
-                                return [4 /*yield*/, response.json()];
+                                versions = _c.sent();
+                                console.log("Using GitHub API to delete package version...");
+                                versionToDelete = versions.data.find(function (v) { return v.name == version; });
+                                versionId = versionToDelete === null || versionToDelete === void 0 ? void 0 : versionToDelete.id;
+                                if (!(versionId && versionId != undefined)) return [3 /*break*/, 4];
+                                return [4 /*yield*/, octokit.request("DELETE /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}", {
+                                        org: orgId,
+                                        package_type: "nuget",
+                                        package_name: packageId,
+                                        package_version_id: versionId,
+                                        headers: (_b = {},
+                                            _b[constants_1.GITHUB_API_VERSION_HEADER_NAME] = constants_1.GITHUB_API_VERSION,
+                                            _b.Accept = constants_1.GITHUB_API_RESPONSE_CONTENT_TYPE,
+                                            _b)
+                                    })];
                             case 3:
-                                versionsResult = (_b.sent());
+                                deleteResponse = _c.sent();
+                                if (deleteResponse.status != 204) {
+                                    console.log("The package version was not deleted because the server encountered an error: ".concat(deleteResponse.status));
+                                    reject(deleteResponse.status);
+                                }
                                 return [3 /*break*/, 5];
                             case 4:
-                                if (response.status == 404) {
-                                    console.log("Package ".concat(packageId, " not found.  Skipping...  Message from GitHub: ").concat(response.statusText));
-                                    resolve();
-                                }
-                                else {
-                                    versionsResult = { message: response.statusText, documentation_url: response.url };
-                                    reject(response.statusText);
-                                }
-                                _b.label = 5;
+                                console.log("The package version ".concat(version, " was not found. Skipping..."));
+                                _c.label = 5;
                             case 5:
-                                versionId = (_a = versionsResult.find(function (v) { return v.name === version; })) === null || _a === void 0 ? void 0 : _a.id;
-                                if (!(versionId && versionId != undefined)) return [3 /*break*/, 13];
-                                _b.label = 6;
+                                resolve();
+                                return [3 /*break*/, 7];
                             case 6:
-                                _b.trys.push([6, 12, , 13]);
-                                return [4 /*yield*/, (0, node_fetch_1["default"])("https://api.github.com/user/packages/nuget/".concat(packageId, "/versions/").concat(versionId), { headers: { Authorization: "Bearer ".concat(token), Accept: 'application/vnd.github+json' }, method: 'DELETE' })];
-                            case 7:
-                                deleteResponse = _b.sent();
-                                if (!((deleteResponse === null || deleteResponse === void 0 ? void 0 : deleteResponse.status) == 200)) return [3 /*break*/, 8];
-                                console.log("The package version ".concat(version, " was deleted successfully."));
-                                return [3 /*break*/, 11];
-                            case 8:
-                                if (!(deleteResponse.status == 403)) return [3 /*break*/, 10];
-                                console.log("The package version ".concat(version, " was not deleted because it is the last version.  Deleting the package instead..."));
-                                return [4 /*yield*/, deletePackageAsync(packageId, token).then(function () { return resolve(); })];
-                            case 9:
-                                _b.sent();
-                                return [3 /*break*/, 11];
-                            case 10:
-                                if (deleteResponse.status == 404) {
-                                    console.log("The package version ".concat(version, " was not found."));
-                                    resolve();
-                                }
-                                else if (deleteResponse.status == 401) {
-                                    console.log("The package version ".concat(version, " was not deleted because the user is not authorized."));
-                                    resolve();
-                                }
-                                else if (deleteResponse.status == 500) {
-                                    console.log("The package version ".concat(version, " was not deleted because the server encountered an error."));
-                                    resolve();
-                                }
-                                _b.label = 11;
-                            case 11: return [3 /*break*/, 13];
-                            case 12:
-                                ex_1 = _b.sent();
+                                ex_1 = _c.sent();
                                 reject(ex_1);
-                                return [3 /*break*/, 13];
-                            case 13: return [3 /*break*/, 15];
-                            case 14:
-                                ex_2 = _b.sent();
-                                reject(ex_2);
-                                return [3 /*break*/, 15];
-                            case 15: return [2 /*return*/];
+                                return [3 /*break*/, 7];
+                            case 7: return [2 /*return*/];
                         }
                     });
                 }); })];
@@ -136,39 +117,47 @@ function deletePackageVersionAsync(packageId, version, token) {
     });
 }
 exports.deletePackageVersionAsync = deletePackageVersionAsync;
-function deletePackageAsync(packageId, token) {
+function deletePackageAsync(orgId, packageId, token) {
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
             return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                    var deletePackageResultJsonString, deleteResponse, ex_3;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
+                    var deletePackageResultJsonString, deleteResponse, ex_2;
+                    var _a;
+                    return __generator(this, function (_b) {
+                        switch (_b.label) {
                             case 0:
+                                if (token != undefined) {
+                                    octokit = new core_1.Octokit({ auth: token });
+                                }
                                 deletePackageResultJsonString = "";
                                 console.log("Deleting package ".concat(packageId, "..."));
-                                _a.label = 1;
+                                _b.label = 1;
                             case 1:
-                                _a.trys.push([1, 3, , 4]);
-                                return [4 /*yield*/, (0, node_fetch_1["default"])("https://api.github.com/user/packages/nuget/".concat(packageId), { headers: { Authorization: "Bearer ".concat(token), Accept: 'application/vnd.github+json' }, method: 'DELETE' })];
+                                _b.trys.push([1, 3, , 4]);
+                                return [4 /*yield*/, octokit.request("DELETE '/orgs/{org}/GET /user/packages/GET /user/packages/{package_type}/{package_name}", {
+                                        org: orgId,
+                                        package_type: "nuget",
+                                        package_name: packageId,
+                                        headers: (_a = {},
+                                            _a[constants_1.GITHUB_API_VERSION_HEADER_NAME] = constants_1.GITHUB_API_VERSION,
+                                            _a.Accept = constants_1.GITHUB_API_RESPONSE_CONTENT_TYPE,
+                                            _a)
+                                    })];
                             case 2:
-                                deleteResponse = _a.sent();
-                                if ((deleteResponse === null || deleteResponse === void 0 ? void 0 : deleteResponse.status) == 200) {
+                                deleteResponse = _b.sent();
+                                if (deleteResponse.status == 204) {
                                     console.log("The package was deleted successfully.");
                                     resolve();
                                 }
-                                else if (deleteResponse.status == 404) {
-                                    console.log("The package ".concat(packageId, " was not found. Skipping..."));
-                                    resolve();
-                                }
-                                else if (deleteResponse.status == 401) {
-                                    console.log("The package ".concat(packageId, " was not deleted because the user is not authorized."));
-                                    reject();
+                                else {
+                                    console.log("The package ".concat(packageId, " was not deleted because the server encountered an error: ").concat(deleteResponse.status));
+                                    reject(deleteResponse.status);
                                 }
                                 return [3 /*break*/, 4];
                             case 3:
-                                ex_3 = _a.sent();
-                                reject();
+                                ex_2 = _b.sent();
+                                reject(ex_2);
                                 return [3 /*break*/, 4];
                             case 4: return [2 /*return*/];
                         }

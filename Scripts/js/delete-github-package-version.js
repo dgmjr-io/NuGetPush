@@ -53,16 +53,17 @@ exports.__esModule = true;
 var process_1 = __importDefault(require("process"));
 var github_cli_1 = require("./github-cli");
 if (process_1["default"].argv.length != 5) {
-    console.error("Usage: delete-github-package-version <packageId> <version> [gh token]");
+    console.error("Usage: delete-github-package-version <orgId> <packageId> <version> [gh token]");
     process_1["default"].exit();
 }
-var packageId = process_1["default"].argv.slice(2)[0];
-var version = process_1["default"].argv.slice(2)[1];
-var token = (process_1["default"].argv.slice(2).length == 3 ? process_1["default"].argv.slice(2)[2] : process_1["default"].env.GIT_TOKEN);
+var orgId = process_1["default"].argv.slice(2)[0];
+var packageId = process_1["default"].argv.slice(2)[1];
+var version = process_1["default"].argv.slice(2)[2];
+var token = (process_1["default"].argv.slice(2).length == 4 ? process_1["default"].argv.slice(2)[3] : process_1["default"].env.GITHUB_TOKEN);
 (function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, github_cli_1.deletePackageVersionAsync)(packageId, version, token).then(function () { return process_1["default"].exit(0); })["catch"](function (err) { console.error(err); process_1["default"].exit(1); })];
+            case 0: return [4 /*yield*/, (0, github_cli_1.deletePackageVersionAsync)(orgId, packageId, version, token).then(function () { return process_1["default"].exit(0); })["catch"](function (err) { console.error(err); process_1["default"].exit(1); })];
             case 1:
                 _a.sent();
                 return [2 /*return*/];

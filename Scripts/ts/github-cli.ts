@@ -8,98 +8,98 @@
  *   
  *   Copyright © 2022-2023 David G. Moore, Jr., All Rights Reserved
  *      License: MIT (https://opensource.org/licenses/MIT)
- */ 
+ */
 
+import { GITHUB_API_ACCEPT_HEADER, GITHUB_API_VERSION, GITHUB_API_VERSION_HEADER, GITHUB_API_VERSION_HEADER_NAME, GITHUB_API_RESPONSE_CONTENT_TYPE } from "./constants";
+import { Octokit } from "@octokit/core";
+import { RequestParameters } from "@octokit/core/dist-types/types";
+import {  } from "@octokit/core/dist-types/types";
 import {PackageVersion, ApiMessage} from "./github-cli-types";
 import fetch from "node-fetch";
 
-export async function deletePackageVersionAsync(packageId: string, version: string, token: string) : Promise<void> {
+var octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+export async function deletePackageVersionAsync(orgId: string, packageId: string, version: string, token: string|undefined): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
-        var versionsResult:string|undefined|null|PackageVersion[]|ApiMessage = undefined;
-        console.log("Using GitHub API to delete package version...");
-        // console.log("Using git token: " + token);
+        if (token != undefined)
+        {
+            octokit = new Octokit({ auth: token });
+        }
+
         try {
-            var response = await fetch(`https://api.github.com/user/packages/nuget/${packageId}/versions`, {headers: {Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json'}, method: 'GET'});
-            if(response.status == 200)
-                versionsResult = (await response.json()) as PackageVersion[];
-            else if(response.status == 404)
-            {
-                console.log(`Package ${packageId} not found.  Skipping...  Message from GitHub: ${response.statusText}`);
-                resolve();
-            }
-            else
-            {
-                versionsResult = {message: response.statusText, documentation_url: response.url};
-                reject(response.statusText);
-            }
+            var versions = await octokit.request("GET /orgs/{org}/packages/{package_type}/{package_name}/versions",
+                {
+                    org: orgId,
+                    package_type: "nuget",
+                    package_name: packageId,
+                    headers: {
+                        [GITHUB_API_VERSION_HEADER_NAME]: GITHUB_API_VERSION,
+                        Accept: GITHUB_API_RESPONSE_CONTENT_TYPE
+                    }
+                });
+        
+            console.log("Using GitHub API to delete package version...");
+            var versionToDelete = versions.data.find(v => v.name == version);
     
-            const versionId = (versionsResult as PackageVersion[]).find((v: PackageVersion) => v.name === version)?.id;
+            const versionId = versionToDelete?.id;
 
             if (versionId && versionId != undefined) {
-                try {
-                    var deleteResponse = await fetch(`https://api.github.com/user/packages/nuget/${packageId}/versions/${versionId}`, {headers: {Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json'}, method: 'DELETE'});
-                    if(deleteResponse?.status == 200)
+                var deleteResponse = await octokit.request("DELETE /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}",
                     {
-                        console.log(`The package version ${version} was deleted successfully.`);
-                    }
-                    else if(deleteResponse.status == 403)
-                    {
-                        console.log(`The package version ${version} was not deleted because it is the last version.  Deleting the package instead...`);
-                        await deletePackageAsync(packageId, token).then(() => resolve());
-                    }
-                    else if(deleteResponse.status == 404)
-                    {
-                        console.log(`The package version ${version} was not found.`);
-                        resolve();
-                    }
-                    else if(deleteResponse.status == 401)
-                    {
-                        console.log(`The package version ${version} was not deleted because the user is not authorized.`);
-                        resolve();
-                    }
-                    else if(deleteResponse.status == 500)
-                    {
-                        console.log(`The package version ${version} was not deleted because the server encountered an error.`);
-                        resolve();
-                    }
-                }
-                catch(ex)
-                {
-                    reject(ex);
+                        org: orgId,
+                        package_type: "nuget",
+                        package_name: packageId,
+                        package_version_id: versionId,
+                        headers: {
+                            [GITHUB_API_VERSION_HEADER_NAME]: GITHUB_API_VERSION,
+                            Accept: GITHUB_API_RESPONSE_CONTENT_TYPE
+                        }
+                    });
+                if (deleteResponse.status != 204) {
+                    console.log(`The package version was not deleted because the server encountered an error: ${deleteResponse.status}`);
+                    reject(deleteResponse.status);
                 }
             }
+            else {
+                console.log(`The package version ${version} was not found. Skipping...`);
+            }
+            resolve();
         }
-        catch(ex)
-        {
+        catch (ex) {
             reject(ex);
         }
     });
 }
 
-export async function deletePackageAsync(packageId: string, token:string) : Promise<void> {
+export async function deletePackageAsync(orgId: string, packageId: string, token:string|undefined) : Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
+        if (token != undefined) {
+            octokit = new Octokit({ auth: token });
+        }
         var deletePackageResultJsonString = "";
         console.log(`Deleting package ${packageId}...`);
         try {
-            var deleteResponse = await fetch(`https://api.github.com/user/packages/nuget/${packageId}`, {headers: {Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json'}, method: 'DELETE'});
-            if(deleteResponse?.status == 200)
-            {
+            var deleteResponse = await octokit.request("DELETE '/orgs/{org}/GET /user/packages/GET /user/packages/{package_type}/{package_name}",
+                {
+                    org: orgId,
+                    package_type: "nuget",
+                    package_name: packageId,
+                    headers: {
+                        [GITHUB_API_VERSION_HEADER_NAME]: GITHUB_API_VERSION,
+                        Accept: GITHUB_API_RESPONSE_CONTENT_TYPE
+                    }
+                });
+            if (deleteResponse.status == 204) {
                 console.log("The package was deleted successfully.")
                 resolve();
             }
-            else if(deleteResponse.status == 404)
-            {
-                console.log(`The package ${packageId} was not found. Skipping...`);
-                resolve();
-            }
-            else if(deleteResponse.status == 401)
-            {
-                console.log(`The package ${packageId} was not deleted because the user is not authorized.`);
-                reject();
+            else {
+                console.log(`The package ${packageId} was not deleted because the server encountered an error: ${deleteResponse.status}`);
+                reject(deleteResponse.status);
             }
         }
         catch(ex) {
-            reject();
+            reject(ex);
         }
     });
 }
