@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 /*
  * github-cli-types.ts
  *
@@ -10,4 +10,4 @@
  *   Copyright © 2022-2023 David G. Moore, Jr., All Rights Reserved
  *      License: MIT (https://opensource.org/licenses/MIT)
  */
-exports.__esModule = true;
+exports.__esModule = true
