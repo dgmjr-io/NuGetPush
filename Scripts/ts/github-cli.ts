@@ -1,21 +1,17 @@
-/* 
+/*
  * github-cli.ts
- * 
+ *
  *   Created: 2022-11-27-05:39:27
  *   Modified: 2022-12-05-04:14:53
- * 
+ *
  *   Author: David G. Moore, Jr. <david@dgmjr.io>
- *   
+ *
  *   Copyright © 2022-2023 David G. Moore, Jr., All Rights Reserved
  *      License: MIT (https://opensource.org/licenses/MIT)
  */
 
-import { GITHUB_API_ACCEPT_HEADER, GITHUB_API_VERSION, GITHUB_API_VERSION_HEADER, GITHUB_API_VERSION_HEADER_NAME, GITHUB_API_RESPONSE_CONTENT_TYPE } from "./constants";
-import { Octokit } from "@octokit/core";
-import { RequestParameters } from "@octokit/core/dist-types/types";
-import {  } from "@octokit/core/dist-types/types";
-import {PackageVersion, ApiMessage} from "./github-cli-types";
-import fetch from "node-fetch";
+import {GITHUB_API_RESPONSE_CONTENT_TYPE, GITHUB_API_VERSION, GITHUB_API_VERSION_HEADER_NAME} from "./constants";
+import {Octokit} from "@octokit/core";
 
 var octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
@@ -37,10 +33,10 @@ export async function deletePackageVersionAsync(orgId: string, packageId: string
                         Accept: GITHUB_API_RESPONSE_CONTENT_TYPE
                     }
                 });
-        
+
             console.log("Using GitHub API to delete package version...");
             var versionToDelete = versions.data.find(v => v.name == version);
-    
+
             const versionId = versionToDelete?.id;
 
             if (versionId && versionId != undefined) {
