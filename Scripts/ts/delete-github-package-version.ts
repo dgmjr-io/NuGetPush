@@ -10,20 +10,30 @@
  *      License: MIT (https://opensource.org/licenses/MIT)
  */
 
-import process from 'process';
-import {deletePackageVersionAsync} from "./github-cli";
+import process from "process";
+import { deletePackageVersionAsync } from "./github-cli";
 
-if(process.argv.length != 5)
-{
-    console.error("Usage: delete-github-package-version <orgId> <packageId> <version> [gh token]");
-    process.exit();
+if (process.argv.length != 5) {
+  console.error(
+    "Usage: delete-github-package-version <orgId> <packageId> <version> [gh token]"
+  );
+  process.exit();
 }
 
 var orgId = process.argv.slice(2)[0];
 var packageId = process.argv.slice(2)[1];
 var version = process.argv.slice(2)[2];
-var token: string = (process.argv.slice(2).length == 4 ? process.argv.slice(2)[3] : process.env.GITHUB_TOKEN) as string;
+var token: string = (
+  process.argv.slice(2).length == 4
+    ? process.argv.slice(2)[3]
+    : process.env.GITHUB_TOKEN
+) as string;
 
 (async () => {
-    await deletePackageVersionAsync(orgId, packageId, version, token).then(() => process.exit(0)).catch((err) => {console.error(err); process.exit(1)});
+  await deletePackageVersionAsync(orgId, packageId, version, token)
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
 })();
