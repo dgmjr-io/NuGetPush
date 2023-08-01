@@ -1,6 +1,7 @@
 ---
+
 authors:
-  - dgmjr
+- dgmjr
 title: NuGetPush Readme
 lastmod: 2022-11-27-05:00:50
 date: 2022-11-27-05:00:49
@@ -9,7 +10,7 @@ type: readme
 slug: nugetpush-readme
 project: shared
 description: This is a simple MSBuild task that allows you to push a NuGet package to a NuGet server.
----
+-----------------------------------------------------------------------------------------------------
 
 # NuGet Push
 
@@ -32,3 +33,4 @@ dotnet pack MyProject.csproj --target:PushAzure
 ```shellscript title="Pushing to GitHub Packages"
 dotnet pack MyProject.csproj --target:PushGitHub
 ```
+
