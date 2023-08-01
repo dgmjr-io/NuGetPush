@@ -1,10 +1,14 @@
 ---
-author: David G. Moore, Jr.
-author_email: david@dgmjr.io
+authors:
+  - dgmjr
 title: NuGetPush Readme
-modified: 2022-11-27-05:00:50
-created: 2022-11-27-05:00:49
+lastmod: 2022-11-27-05:00:50
+date: 2022-11-27-05:00:49
 license: MIT
+type: readme
+slug: nugetpush-readme
+project: shared
+description: This is a simple MSBuild task that allows you to push a NuGet package to a NuGet server.
 ---
 
 # NuGet Push
