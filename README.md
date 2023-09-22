@@ -35,3 +35,4 @@ dotnet pack MyProject.csproj --target:PushAzure
 ```shellscript title="Pushing to GitHub Packages"
 dotnet pack MyProject.csproj --target:PushGitHub
 ```
+
