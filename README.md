@@ -18,4 +18,3 @@ This is a simple MSBuild task that allows you to push a NuGet package to a NuGet
 ## Usage
 
 First, you need to insert a reference to the SDK into your project like this:
-
