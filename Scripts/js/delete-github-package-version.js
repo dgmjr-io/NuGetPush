@@ -52,7 +52,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 var process_1 = __importDefault(require("process"));
 var github_cli_1 = require("./github-cli");
-if (process_1["default"].argv.length != 5) {
+if (process_1["default"].argv.length < 3) {
     console.error("Usage: delete-github-package-version <orgId> <packageId> <version> [gh token]");
     process_1["default"].exit();
 }

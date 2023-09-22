@@ -1,11 +1,11 @@
 <!--
  * Sdk.targets
- * 
+ *
  *   Created: 2022-11-27-05:39:27
  *   Modified: 2022-12-05-04:12:25
- * 
+ *
  *   Author: David G. Moore, Jr. <david@dgmjr.io>
- *   
+ *
  *   Copyright © 2022-2023 David G. Moore, Jr., All Rights Reserved
  *      License: MIT (https://opensource.org/licenses/MIT)
 -->
@@ -18,6 +18,14 @@
     <Exec Command="echo 'Deleting package $(PackageId) $(PackageVersion) from Azure...';" IgnoreExitCode="true"
       Condition="'$(PackageExists)' != ''" />
     <Exec Command="dotnet nuget delete $(PackageId) $(PackageVersion) -s Azure --non-interactive -k 'az'" IgnoreExitCode="true"
+      Condition="'$(PackageExists)' != ''" />
+    <Exec Command="dotnet nuget push $(PackageTargetPath) -s Azure -k 'az' --skip-duplicate" Condition="Exists('$(PackageTargetPath)')" />
+  </Target>
+
+  <Target Name="PushProGetPrerelease" DependsOnTargets="Pack;MinVer" Condition="'$(GeneratePackageOnBuild)' == 'true'">
+    <Exec Command="echo 'Deleting package $(PackageId) $(PackageVersion) from ProGet...';" IgnoreExitCode="true"
+      Condition="'$(PackageExists)' != ''" />
+    <Exec Command="dotnet nuget delete $(PackageId) $(PackageVersion) -s ProGetPrerelease --non-interactive -k 'az'" IgnoreExitCode="true"
       Condition="'$(PackageExists)' != ''" />
     <Exec Command="dotnet nuget push $(PackageTargetPath) -s Azure -k 'az' --skip-duplicate" Condition="Exists('$(PackageTargetPath)')" />
   </Target>
