@@ -26,6 +26,10 @@ jobs:
           node-version: 16
       - run: npm install;npm run build-ts
       - run: npm install -g npm-cli-login
+      - name: Upload the Build
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          path: ./Scripts
 
   publish-gpr:
     needs: build
@@ -53,13 +57,16 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Download the Build
+        uses: actions/download-artifact@v2.1.1
       - uses: actions/setup-node@v3
         with:
           node-version: 16
           registry-url: ${{ vars.DGMJR_IO_NPM_ENDPOINT }}
           token: ${{ secrets.PROGET_API_TOKEN }}
       - run: npm-cli-login -u api -p ${{ secrets.PROGET_API_TOKEN }} -e dev@dgmjr.io --registry ${{ vars.DGMJR_IO_NPM_ENDPOINT }}
+        working-directory: .
       - run: npm publish --registry=${{ vars.DGMJR_IO_NPM_ENDPOINT }}
+        working-directory: .
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PROGET_API_TOKEN }}
