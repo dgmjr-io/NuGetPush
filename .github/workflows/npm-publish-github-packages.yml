@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: 16
       - run: npm install;npm run build-ts
+      - run: npm install -g npm-cli-login
 
   publish-gpr:
     needs: build
@@ -40,6 +41,7 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           token: ${{ secrets.GITHUB_TOKEN }}
           scope: '@dgmjr-io'
+      - run: npm-cli-login -u dgmjr -p ${{ secrets.GITHUB_TOKEN }} -e dev@dgmjr.io --registry https://npm.pkg.github.com/
       - run: npm publish --registry=https://npm.pkg.github.com/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,6 +59,7 @@ jobs:
           node-version: 16
           registry-url: ${{ vars.DGMJR_IO_NPM_ENDPOINT }}
           token: ${{ secrets.PROGET_API_TOKEN }}
+      - run: npm-cli-login -u api -p ${{ secrets.PROGET_API_TOKEN }} -e dev@dgmjr.io --registry ${{ vars.DGMJR_IO_NPM_ENDPOINT }}
       - run: npm publish --registry=${{ vars.DGMJR_IO_NPM_ENDPOINT }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PROGET_API_TOKEN }}
