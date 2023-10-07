@@ -24,8 +24,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm install
-      - run: npm run build-ts
+      - run: tsctsc
+      - run: npm ci
 
   publish-gpr:
     needs: build
@@ -39,10 +39,12 @@ jobs:
         with:
           node-version: 16
           registry-url: https://npm.pkg.github.com/
+          token: ${{ secrets.GITHUB_TOKEN }}
+          scope: '@dgmjr-io'
       - run: npm ci
-      - run: npm publish
+      - run: npm publish --registry=https://npm.pkg.github.com/
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
   publish-dgmjr-io:
     needs: build
@@ -55,7 +57,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          registry-url: https://npm.pkg.github.com/
-      - run: npm publish
+          registry-url: ${{ variables.DGMJR_IO_NPM_ENDPOINT }}
+          token: ${{ secrets.PROGET_API_TOKEN }}
+      - run: npm publish --registry=${{ variables.DGMJR_IO_NPM_ENDPOINT }}
         env:
-          NODE_AUTH_TOKEN: ${{secrets.PROGET_API_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.PROGET_API_TOKEN }}
