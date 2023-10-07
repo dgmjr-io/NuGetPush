@@ -18,7 +18,7 @@ defaults:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -26,19 +26,17 @@ jobs:
           node-version: 16
       - run: npm install;npm run build-ts
       - run: npm install -g npm-cli-login
-      - name: Upload the Build
-        uses: actions/upload-artifact@v3.1.3
-        with:
-          path: ./Scripts
 
   publish-gpr:
     needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm install;npm run build-ts
+      - run: npm install -g npm-cli-login
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -52,13 +50,14 @@ jobs:
           
   publish-dgmjr-io:
     needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    runs-on: self-hosted
     steps:
-      - name: Download the Build
-        uses: actions/download-artifact@v2.1.1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm install;npm run build-ts
+      - run: npm install -g npm-cli-login
       - uses: actions/setup-node@v3
         with:
           node-version: 16
