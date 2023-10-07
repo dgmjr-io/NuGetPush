@@ -23,7 +23,7 @@
     "url": "https://github.com/dgmjr-io/NuGetPush.git"
   },
   "scripts": {
-    "build-ts": "tsc",
+    "build-ts": "npm install;tsc",
     "uninstall": "npm uninstall github-packages-push",
     "watch-ts": "tsc --watch",
     "clean": "rm -rf node_mofules;rm -rf js;rm -rf **/*.js"
