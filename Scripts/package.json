@@ -1,5 +1,36 @@
 {
+  "author": {
+    "email": "david@dgmjr.io",
+    "name": "David G. Moore, Jr.",
+    "url": "https://github.com/dgmjr"
+  },
+  "description": "A TypeScript library, which allows deleting from GitHub packages",
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.3"
+  },
+  "keywords": [
+    "github",
+    "nuget",
+    "packages"
+  ],
+  "main": "dist/index.js",
+  "name": "github-packages-push",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dgmjr-io/NuGetPush.git"
+  },
+  "scripts": {
+    "build-ts": "tsc",
+    "uninstall": "npm uninstall github-packages-push",
+    "watch-ts": "tsc --watch",
+    "clean": "rm -rf node_mofules;rm -rf js;rm -rf **/*.js"
+  },
+  "version": "0.0.1",
   "dependencies": {
+    "@tsconfig/node16": "^16.1.1",
     "form-data": "^4.0.0",
     "octokit": "^2.0.14",
     "yargs": "^17.6.2"

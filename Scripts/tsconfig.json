@@ -1,0 +1,14 @@
+{
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "include": [
+    "/**/index.ts"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "./js"
+  },
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**"
+  ]
+}
