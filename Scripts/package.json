@@ -26,7 +26,7 @@
     "build-ts": "tsc",
     "uninstall": "npm uninstall github-packages-push",
     "watch-ts": "tsc --watch",
-    "clean": "rm -rf node_mofules;rm -rf js;rm -rf **/*.js"
+    "clean": "rm -rf node_modules;rm -rf js;rm -rf **/*.js"
   },
   "version": "0.0.1",
   "dependencies": {

@@ -5,7 +5,8 @@
   ],
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "./js"
+    "outDir": "./js",
+    "module": "ESNext"
   },
   "exclude": [
     "**/node_modules/**",
