@@ -1,11 +1,11 @@
 <!--
  * NuGetPush.nuproj
- * 
+ *
  *   Created: 2022-11-27-04:36:43
  *   Modified: 2022-11-27-04:36:44
- * 
+ *
  *   Author: David G. Moore, Jr. <david@dgmjr.io>
- *   
+ *
  *   Copyright © 2022-2023 David G. Moore, Jr., All Rights Reserved
  *      License: MIT (https://opensource.org/licenses/MIT)
 -->
@@ -17,6 +17,7 @@
     <Description>This is a simple MSBuild task that allows you to push a NuGet package to a NuGet server.</Description>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <GitHubOrg>dgmjr-io</GitHubOrg>
+    <ProjectGuid>2498EED9-9158-41BD-9D4A-246A70A1D9E2</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="./Sdk/*" PackagePath="Sdk/%(Filename)%(Extension)" />

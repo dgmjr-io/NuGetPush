@@ -1,12 +1,14 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
   "include": [
-    "/**/index.ts"
+    "./ts/*.*"
   ],
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./js",
-    "module": "ESNext"
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "noImplicitAny": false
   },
   "exclude": [
     "**/node_modules/**",

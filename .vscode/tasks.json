@@ -1,0 +1,15 @@
+{
+  "$schena": "https://json.schemastore.org/task.json",
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "build",
+      "path": "Scripts",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: build - Scripts",
+      "detail": "npm install --repository https://repository.npmjs.org; tsc"
+    }
+  ]
+}
