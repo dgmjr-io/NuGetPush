@@ -43,7 +43,7 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           token: ${{ secrets.GITHUB_TOKEN }}
           scope: '@dgmjr-io'
-      - run: npm-cli-login -u dgmjr -p ${{ secrets.GITHUB_TOKEN }} -e dev@dgmjr.io -r https://npm.pkg.github.com/
+      - run: npm-cli-login -u dgmjr -p ${{ secrets.GITHUB_TOKEN }} -e dev@dgmjr.io -s @dgmjr -r https://npm.pkg.github.com/
       - run: npm publish --registry=https://npm.pkg.github.com/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
