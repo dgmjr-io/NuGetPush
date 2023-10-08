@@ -1153,3 +1153,4 @@ $RECYCLE.BIN/
 */site/*
 *site/*
 js/
+.npmrc
