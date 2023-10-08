@@ -30,4 +30,10 @@ export interface ApiMessage {
   documentation_url: string;
 }
 
-export type PackageType = "nuget" | "npm" | "docker" | "maven" | "rubygems" | "container";
+export type PackageType =
+  | "nuget"
+  | "npm"
+  | "docker"
+  | "maven"
+  | "rubygems"
+  | "container";
