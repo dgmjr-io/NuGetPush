@@ -19,8 +19,34 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
-    - name: Restore dependencies
-      run: dotnet restore
+        dotnet-version: 8.0.x
     - name: Build
-      run: dotnet pack *.nuproj --no-restore
+      uses: dgmjr-actions/build-using-dgmjrsdk@main
+      with:
+        configuration: Release
+        git-token: ${{ secrets.GITHUB_TOKEN }}
+        git-username: dgmjr
+        git-nuget-endpoint: ${{ vars.GIT_NUGET_ENDPOINT }}
+        private-nuget-endpoint: ${{ vars.DGMJR_IO_NUGET_ENDPOINT }}
+        private-nuget-api-key: ${{ secrets.PROGET_API_KEY }}
+        nuget-api-key: ${{ NUGET_API_KEY }}
+        repo: dgmjr-io/NuGetPush
+        project-file-path: NuGetPush.nuproj
+
+    - name: Push
+      uses: dgmjr-actions/nuget-push@main
+      with:
+        configuration: Release
+        git-token: ${{ secrets.GITHUB_TOKEN }}
+        git-username: dgmjr
+        git-nuget-endpoint: ${{ vars.GIT_NUGET_ENDPOINT }}
+        private-nuget-endpoint: ${{ vars.DGMJR_IO_NUGET_ENDPOINT }}
+        private-nuget-api-key: ${{ secrets.PROGET_API_KEY }}
+        nuget-api-key: ${{ NUGET_API_KEY }}
+        repo: dgmjr-io/NuGetPush
+        project-file-path: NuGetPush.nuproj
+        push-github: true
+        push-dgmjr-io: true
+        push-nuget: false
+        
+        
