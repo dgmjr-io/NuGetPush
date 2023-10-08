@@ -63,9 +63,9 @@ jobs:
           node-version: 16
           registry-url: ${{ vars.DGMJR_IO_NPM_ENDPOINT }}
           token: ${{ secrets.PROGET_API_TOKEN }}
-      - run: npm-cli-login -u api -p ${{ secrets.PROGET_API_TOKEN }} -e dev@dgmjr.io -r ${{ vars.DGMJR_IO_NPM_ENDPOINT }}
+      - run: npm-cli-login -u api -p ${{ secrets.PROGET_API_KEY }} -e dev@dgmjr.io -r ${{ vars.DGMJR_IO_NPM_ENDPOINT }}
         working-directory: .
       - run: npm publish --registry=${{ vars.DGMJR_IO_NPM_ENDPOINT }}
         working-directory: .
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.PROGET_API_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.PROGET_API_KEY }}
