@@ -14,7 +14,7 @@
     "packages"
   ],
   "main": "dist/index.js",
-  "name": "github-packages-push",
+  "name": "@dgmjr/github-packages-push",
   "repository": {
     "type": "git",
     "url": "https://github.com/dgmjr-io/NuGetPush.git"
