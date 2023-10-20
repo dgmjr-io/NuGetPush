@@ -9,6 +9,7 @@
  *   Copyright © 2022-2023 David G. Moore, Jr., All Rights Reserved
  *      License: MIT (https://opensource.org/licenses/MIT)
  */
+import { SemVer } from "semver";
 
 export interface PackageVersion {
   id: number;
@@ -18,7 +19,7 @@ export interface PackageVersion {
   created_at: string;
   updated_at: string;
   visibility: string;
-  package_type: string;
+  package_type: PackageType;
   downloads_count: number;
   description: string;
   html_url: string;
@@ -31,3 +32,7 @@ export interface ApiMessage {
 }
 
 export type PackageType = "nuget" | "npm" | "docker" | "maven" | "rubygems" | "container";
+
+
+export const toSemVer = (stringVer: string | undefined) => new SemVer(stringVer ?? "0.0.0");
+export const toPackageType = (stringType: string | undefined) => stringType as PackageType;

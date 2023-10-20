@@ -33,7 +33,7 @@
     <PackageTag Include="Packaging" />
   </ItemGroup>
   <Target Name="BuildTypeScript" AfterTargets="Build">
-    <Exec Command="tsc $(MSBuildThisFileDirectory)Scripts/ts/*.ts --outDir $(MSBuildThisFileDirectory)Scripts/js --esModuleInterop" />
+    <Exec Command="tsc" WorkingDirectory="./Scripts" />
   </Target>
   <Target Name="CleanJSOutput" AfterTargets="Clean">
     <Delete Files="$(MSBuildThisFileDirectory)Scripts/js/*" />

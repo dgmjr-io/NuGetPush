@@ -1,23 +1,23 @@
 <!--
  * Sdk.props
- * 
+ *
  *   Created: 2022-11-27-05:39:27
  *   Modified: 2022-12-05-04:12:36
- * 
+ *
  *   Author: David G. Moore, Jr. <david@dgmjr.io>
- *   
+ *
  *   Copyright © 2022-2023 David G. Moore, Jr., All Rights Reserved
  *      License: MIT (https://opensource.org/licenses/MIT)
 -->
 
 <Project>
   <ItemDefinitionGroup>
-    <NuGetSource Value="Value" PushOnBuild="false" ApiKey="" /> 
+    <NuGetSource Value="Value" PushOnBuild="false" ApiKey="" />
     <NuGetPushJob PackagePath="" PackageId="" Version="" ApiKey="" DeleteCommand="" PushCommand="" />
   </ItemDefinitionGroup>
   <PropertyGroup>
-    <NuGetConfigFile>$(MSBuildThisFileDirectory)../NuGet.config</NuGetConfigFile>  
-    <DeleteGitHubPackageVersionScriptName>$(MSBuildThisFileDirectory)../Scripts/delete-github-package-version.ps1</DeleteGitHubPackageVersionScriptName>
+    <NuGetConfigFile>$(MSBuildThisFileDirectory)../NuGet.config</NuGetConfigFile>
+    <DeleteGitHubPackageVersionScriptName>$(MSBuildThisFileDirectory)../Scripts/delete-github-package-version</DeleteGitHubPackageVersionScriptName>
     <GitHubOrg />
   </PropertyGroup>
 </Project>

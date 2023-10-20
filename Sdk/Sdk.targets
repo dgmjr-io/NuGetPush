@@ -39,7 +39,7 @@
 
   <Target Name="PushGitHub" DependsOnTargets="EnsureGitHubToken" Condition="'$(GeneratePackageOnBuild)' == 'true'">
     <PropertyGroup>
-      <DeleteGitHubPackageVersionScript>pwsh $(DeleteGitHubPackageVersionScriptName) $(PackageId) $(PackageVersion) '$(GitHubAuthToken)'</DeleteGitHubPackageVersionScript>
+      <DeleteGitHubPackageVersionScript>$(DeleteGitHubPackageVersionScriptName) --org "dgmjr-io" -i "$(PackageId)" -v "$(PackageVersion)" --t nuget --token "$(GitHubAuthToken)"</DeleteGitHubPackageVersionScript>
     </PropertyGroup>
     <Message Text="echo 'DeleteGitHubPackageVersionScript: $(DeleteGitHubPackageVersionScript)' "  />
     <Exec Command="$(DeleteGitHubPackageVersionScript)"  ContinueOnError="true" IgnoreExitCode="true" />
