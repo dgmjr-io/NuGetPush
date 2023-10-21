@@ -3,6 +3,10 @@
 
 name: Package the package
 
+concurrency:
+  group: CI-build
+  cancel-in-progress: true
+  
 on:
   push:
     branches: [ "main" ]
