@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm install;npm run build-ts
+      - run: npm install;npm run build
       - run: npm install -g npm-cli-login
 
   publish-dgmjr-io:
@@ -39,7 +39,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm install;npm run build-ts
+      - run: npm install;npm run build
       - run: npm install -g npm-cli-login
       - uses: actions/setup-node@v3
         with:
@@ -59,7 +59,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm install;npm run build-ts
+      - run: npm install;npm run build
       - run: npm install -g npm-cli-login
       - uses: actions/setup-node@v3
         with:
