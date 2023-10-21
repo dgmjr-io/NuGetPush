@@ -23,11 +23,19 @@
   </Target>
 
   <Target Name="PushProGetPrerelease" DependsOnTargets="Pack;MinVer" Condition="'$(GeneratePackageOnBuild)' == 'true'">
-    <Exec Command="echo 'Deleting package $(PackageId) $(PackageVersion) from ProGet...';" IgnoreExitCode="true"
-      Condition="'$(PackageExists)' != ''" />
-    <Exec Command="dotnet nuget delete $(PackageId) $(PackageVersion) -s ProGetPrerelease --non-interactive -k 'az'" IgnoreExitCode="true"
-      Condition="'$(PackageExists)' != ''" />
-    <Exec Command="dotnet nuget push $(PackageTargetPath) -s Azure -k 'az' --skip-duplicate" Condition="Exists('$(PackageTargetPath)')" />
+    <!-- <Exec Command="echo 'Deleting package $(PackageId) $(PackageVersion) from ProGet...';" IgnoreExitCode="true"
+      Condition="'$(PackageExists)' != ''" /> -->
+    <!-- <Exec Command="dotnet nuget delete $(PackageId) $(PackageVersion) -s ProGetPrerelease --non-interactive -k '$env:PROGET_API_KEY'" IgnoreExitCode="true"
+      Condition="'$(PackageExists)' != ''" /> -->
+    <Exec Command="dotnet nuget push $(PackageTargetPath) -s ProGet -k '$env:PROGET_API_KEY' --skip-duplicate" Condition="Exists('$(PackageTargetPath)')" />
+  </Target>
+
+  <Target Name="PushProGet" DependsOnTargets="Pack;MinVer" Condition="'$(GeneratePackageOnBuild)' == 'true'">
+    <!-- <Exec Command="echo 'Deleting package $(PackageId) $(PackageVersion) from ProGet...';" IgnoreExitCode="true"
+      Condition="'$(PackageExists)' != ''" /> -->
+    <!-- <Exec Command="dotnet nuget delete $(PackageId) $(PackageVersion) -s ProGet --non-interactive -k '$env:PROGET_API_KEY'" IgnoreExitCode="true"
+      Condition="'$(PackageExists)' != ''" /> -->
+    <Exec Command="pwsh -Command %22dotnet nuget push $(PackageTargetPath) -s ProGet -k '$env:PROGET_API_KEY' --skip-duplicate%22" Condition="Exists('$(PackageTargetPath)')" />
   </Target>
 
   <Target Name="EnsureGitHubToken" DependsOnTargets="Pack;MinVer" Condition="'$(GeneratePackageOnBuild)' == 'true'">
