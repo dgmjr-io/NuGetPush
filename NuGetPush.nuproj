@@ -17,6 +17,8 @@
     <Description>This is a simple MSBuild task that allows you to push a NuGet package to a NuGet server.</Description>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <GitHubOrg>dgmjr-io</GitHubOrg>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IsNuGetized>true</IsNuGetized>
     <ProjectGuid>2498EED9-9158-41BD-9D4A-246A70A1D9E2</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
