@@ -10,17 +10,17 @@
  *      License: MIT (https://opensource.org/licenses/MIT)
  */
 
-import process from 'process';
+import process from "process";
 import { deletePackageVersionAsync } from "./github-cli.js";
-import { PackageType, toPackageType, toSemVer } from './github-cli-types.js';
-import yargs from 'yargs/yargs';
-import { hideBin } from 'yargs/helpers';
+import { PackageType, toPackageType, toSemVer } from "./github-cli-types.js";
+import yargs from "yargs/yargs";
+import { hideBin } from "yargs/helpers";
 import { SemVer } from "semver";
 // const argv = yargs(hideBin(process.argv));
 
 const getArg = function (...marker: string[]): string | undefined {
   for (let i = 0; i < marker.length; i++) {
-    var pos = process.argv.findIndex(arg => arg.endsWith(marker[i]));
+    var pos = process.argv.findIndex((arg) => arg.endsWith(marker[i]));
     if (pos > -1 && pos < process.argv.length - 1) {
       return process.argv[pos + 1];
     }
@@ -29,7 +29,6 @@ const getArg = function (...marker: string[]): string | undefined {
 };
 
 const main = async () => {
-
   // console.log(`yargs: ${JSON.stringify(yargs)}`);
 
   // console.log(`argv: ${JSON.stringify(argv)}`);
@@ -62,7 +61,9 @@ const main = async () => {
   const packageType = toPackageType(getArg("t", "type", "package-type"));
   const token = getArg("token", "k");
 
-  console.log(`Args: org: ${orgId}, packageId: ${packageId}, version: ${version}, packageType: ${packageType}, token: ${token}`);
+  console.log(
+    `Args: org: ${orgId}, packageId: ${packageId}, version: ${version}, packageType: ${packageType}, token: ${token}`,
+  );
 
   if (orgId === undefined) {
     throw new Error("Organization is required");
@@ -84,7 +85,13 @@ const main = async () => {
     throw new Error("GitHub API token is required");
   }
 
-  await deletePackageVersionAsync(orgId, packageId, version, packageType, token);
+  await deletePackageVersionAsync(
+    orgId,
+    packageId,
+    version,
+    packageType,
+    token,
+  );
 };
 
 console.log(`main: ${main}`);
