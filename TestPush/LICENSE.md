@@ -3,26 +3,28 @@
 date: 2023-07-13T05:44:46:00-05:00Z
 description: Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, yadda, yadda, yadda...
 keywords:
+
 - IP
 - copyright
 - license
 - mit
-permissions:
+  permissions:
 - commercial-use
 - modifications
 - distribution
 - private-use
-conditions:
+  conditions:
 - include-copyright
-limitations:
+  limitations:
 - liability
 - warranty
-lastmod: 2024-01-0T00:39:00.0000+05:00Z
-license: MIT
-slug: mit-license
-title: MIT License
-type: license
--------------
+  lastmod: 2024-01-0T00:39:00.0000+05:00Z
+  license: MIT
+  slug: mit-license
+  title: MIT License
+  type: license
+
+---
 
 # MIT License
 
@@ -33,4 +35,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
