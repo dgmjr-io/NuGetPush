@@ -22,7 +22,7 @@ public class DeleteAndPush : NuGetTaskBase
     public override bool Execute()
     {
         new DeletePackage(TaskResources, HelpKeywordPrefix) { Source = Source, ApiKey = this.ApiKey, PackageId = PackageId, Version = Version, MSBuildProjectDirectory = MSBuildProjectDirectory }.Execute();
-        new Push(TaskResources, HelpKeywordPrefix)  { Source = Source, ApiKey = ApiKey, PackagePath = PackagePath, MSBuildProjectDirectory = MSBuildProjectDirectory }.Execute();
+        new Push(TaskResources, HelpKeywordPrefix) { Source = Source, ApiKey = ApiKey, PackagePath = PackagePath, MSBuildProjectDirectory = MSBuildProjectDirectory }.Execute();
         return true;
     }
 }
