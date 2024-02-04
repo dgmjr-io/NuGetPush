@@ -19,5 +19,12 @@
     <NuGetConfigFile>$(MSBuildThisFileDirectory)../NuGet.config</NuGetConfigFile>
     <DeleteGitHubPackageVersionScriptName>$(MSBuildThisFileDirectory)../Scripts/delete-github-package-version</DeleteGitHubPackageVersionScriptName>
     <GitHubOrg />
+    <!-- <NuGetPushDll Condition="'$(MSBuildProjectName)' == 'NuGetPush'">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../bin/Local/netstandard2.0/NuGetPush.dll'))</NuGetPushDll>
+    <NuGetPushDll Condition="'$(MSBuildProjectName)' != 'NuGetPush'">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../lib/netstandard2.0/NuGetPush.dll'))</NuGetPushDll> -->
+    <NuGetPushDll>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../lib/netstandard2.0/NuGetPush.dll'))</NuGetPushDll>
   </PropertyGroup>
+  <UsingTask TaskName="NuGetPush.Tasks.Push" AssemblyFile="$(NuGetPushDll)" />
+  <UsingTask TaskName="NuGetPush.Tasks.DeletePackage" AssemblyFile="$(NuGetPushDll)" />
+  <UsingTask TaskName="NuGetPush.Tasks.DeleteAndPush" AssemblyFile="$(NuGetPushDll)" />
+  <UsingTask TaskName="NuGetPush.Tasks.GetNuGetApiKey" AssemblyFile="$(NuGetPushDll)" />
 </Project>

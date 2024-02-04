@@ -1,0 +1,17 @@
+<Project>
+  <Target Name="EnsureGitHubToken" DependsOnTargets="Pack;MinVer" Condition="'$(GeneratePackageOnBuild)' == 'true'">
+    <Exec Command="gh auth token" ConsoleToMSBuild="true" IgnoreExitCode="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitHubAuthToken" />
+    </Exec>
+    <Error Condition="'$(GitHubAuthToken)' == '' Or '$(GitHubAuthToken)' == 'undefined'" Text="You must first set the GitHub auth token by running 'gh auth login'" Code="GHPUSH001" HelpLink="https://cli.github.com/manual/gh_auth_login" />
+  </Target>
+
+  <Target Name="PushGitHub" DependsOnTargets="EnsureGitHubToken" Condition="'$(GeneratePackageOnBuild)' == 'true'">
+    <PropertyGroup>
+      <DeleteGitHubPackageVersionScript>$(DeleteGitHubPackageVersionScriptName) --org "dgmjr-io" -i "$(PackageId)" -v "$(PackageVersion)" --t nuget --token "$(GitHubAuthToken)"</DeleteGitHubPackageVersionScript>
+    </PropertyGroup>
+    <Message Text="echo 'DeleteGitHubPackageVersionScript: $(DeleteGitHubPackageVersionScript)' "  />
+    <Exec Command="$(DeleteGitHubPackageVersionScript)"  ContinueOnError="true" IgnoreExitCode="true" />
+    <Exec Command="dotnet nuget push $(PackageTargetPath) -s GitHub -k $(GitHubAuthToken) --skip-duplicate" Condition="Exists('$(PackageTargetPath)')" IgnoreExitCode="true" />
+  </Target>
+</Project>

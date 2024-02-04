@@ -1,0 +1,10 @@
+<Project>
+  <ItemGroup>
+    <PackageFile Remove="@(PackageFile->WithMetadataValue('PackagePath', 'README.md'))" />
+    <Content Remove="@(Content)" />
+    <None Remove="@(None)" />
+    <PackageFile Include="icon.png" PackagePath="icon.png" />
+    <PackageFile Include="./bin/Local/netstandard2.0/*.*" PackagePath="$(TargetFramework)/%(Filename)%(Extension)" />
+    <PackageFile Include="./Sdk/*.*" PackagePath="Sdk/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

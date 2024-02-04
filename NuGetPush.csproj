@@ -10,7 +10,8 @@
  *      License: MIT (https://opensource.org/licenses/MIT)
 -->
 
-<Project Sdk="Microsoft.Build.NoTargets">
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="./Sdk/Sdk.props" />
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
@@ -20,10 +21,15 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IsNuGetized>true</IsNuGetized>
     <ProjectGuid>2498EED9-9158-41BD-9D4A-246A70A1D9E2</ProjectGuid>
+    <EmitNuspec>true</EmitNuspec>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <OutputPath>lib/</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="./Sdk/*" PackagePath="Sdk/%(Filename)%(Extension)" />
-    <Content Include="./Scripts/**/*" PackagePath="Scripts/%(RecursiveDir)%(Filename)%(Extension)" />
+    <PackageFile Include="./Sdk/*" PackagePath="Sdk/%(Filename)%(Extension)" />
+    <PackageFile Include="./Targets/**/*" PackagePath="Targets/%(Filename)%(Extension)" />
+    <PackageFile Include="./Scripts/**/*" PackagePath="Scripts/%(RecursiveDir)%(Filename)%(Extension)" />
+    <PackageFile Include="$(OutputPath)$(TargetFramework)/*.*" PackagePath="lib/%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
     <PackageTag Include="GitHub" />
@@ -34,10 +40,22 @@
     <PackageTag Include="NuGet-Push" />
     <PackageTag Include="Packaging" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MSBuild.Usings" IncludeAssets="Build;BuildTransitive;BuildMultitargeting;Runtime;Compile" ExcludeAssets="ContentFiles;Native;Analyzers" PrivateAssets="None" />
+    <PackageReference Include="NuGet.Protocol" />
+    <PackageReference Include="NuGet.Commands" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="./TestPush/**/*.cs" />
+  </ItemGroup>
+  <!-- <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Framework" VersionOverride="4.0.0" />
+  </ItemGroup> -->
   <Target Name="BuildTypeScript" AfterTargets="Build">
     <Exec Command="tsc" WorkingDirectory="./Scripts" />
   </Target>
   <Target Name="CleanJSOutput" AfterTargets="Clean">
     <Delete Files="$(MSBuildThisFileDirectory)Scripts/js/*" />
   </Target>
+  <Import Project="./Sdk/Sdk.targets" />
 </Project>
