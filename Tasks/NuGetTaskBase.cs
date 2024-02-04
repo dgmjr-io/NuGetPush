@@ -26,7 +26,7 @@ public abstract class NuGetTaskBase : MSBTask
     protected PackageSourceProvider PackageSourceProvider => new(Settings);
 
     private NuGetMSBuildTaskLogger? _logger;
-    public virtual NuGetMSBuildTaskLogger Logger { get => _logger ??= new (this); set => _logger = value; }
+    public virtual NuGetMSBuildTaskLogger Logger { get => _logger ??= new(this); set => _logger = value; }
 
     private string? _apiKey;
     public virtual string ApiKey
