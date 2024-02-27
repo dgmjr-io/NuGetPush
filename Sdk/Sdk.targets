@@ -11,5 +11,5 @@
 -->
 
 <Project>
-  <Import Project="../Targets/*.targets" Condition="'$(MSBuildProjectName)' != 'NuGetPush'" />
+  <Import Project="$(MSBuildThisFileDirectory)../Targets/*.targets" />
 </Project>

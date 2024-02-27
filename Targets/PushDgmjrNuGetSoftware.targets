@@ -1,0 +1,20 @@
+<Project>
+  <Target Name="PushDgmjrNuGetSoftware" AfterTargets="Pack" DependsOnTargets="Pack;GetPackageVersion" Condition="'$(GeneratePackageOnBuild)' == 'true' And '$(DesignTimeBuild)' != 'true' And ('$(Configuration)' == 'Local' Or $(InitialTargets.Contains('PushLocal')))">
+    <NuGetPush.Tasks.GetNuGetApiKey
+      Source="dgmjr.nuget.software"
+      MSBuildProjectDirectory="$(MSBuildProjectDirectory)">
+      <Output TaskParameter="ApiKey" PropertyName="DGMJR_NUGET_SOFTWARE_API_KEY" />
+    </NuGetPush.Tasks.GetNuGetApiKey>
+    <!-- <Message Text="DGMJR_NUGET_SOFTWARE_API_KEY: $(DGMJR_NUGET_SOFTWARE_API_KEY)" Importance="high" /> -->
+    <Exec Command="dotnet nuget delete $(PackageId) $(PackageVersion) -s dgmjr.nuget.software --non-interactive -k:$(DGMJR_NUGET_SOFTWARE_API_KEY)" ContinueOnError="true" IgnoreExitCode="true" />
+    <Exec Command="dotnet nuget push $(PackageTargetPath) -s dgmjr.nuget.software --skip-duplicate -k:$(DGMJR_NUGET_SOFTWARE_API_KEY)" Condition="Exists('$(PackageTargetPath)')" IgnoreExitCode="true" />
+    <!-- <Warning Text="Deleting package $(PackageId), version $(PackageVersion) from Feedz.io and pushing a new version..." />
+    <NuGetPush.Tasks.DeleteAndPush
+      Source="Feedz.io"
+      MSBuildProjectDirectory="$(MSBuildProjectDirectory)"
+      ApiKey="$(FEEDZ_IO_API_KEY)"
+      PackageId="$(PackageId)"
+      Version="$(PackageVersion)"
+      PackagePath="$(PackageTargetPath)" /> -->
+  </Target>
+</Project>
