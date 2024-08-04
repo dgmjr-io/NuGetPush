@@ -13,7 +13,7 @@
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
     "@types/semver": "^7.5.3",
-    "@types/yargs": "^17.0.28"
+    "@types/yargs": "^17.0.32"
   },
   "keywords": [
     "github",
