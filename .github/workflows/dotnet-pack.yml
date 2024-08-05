@@ -52,5 +52,13 @@ jobs:
         push-github: true
         push-dgmjr-io: true
         push-nuget: false
-        
+
+  CleanUp:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Clean up build artifacts
+      uses: dgmjr-actions/cleanup-build-artifacts@main
+    
+
         
