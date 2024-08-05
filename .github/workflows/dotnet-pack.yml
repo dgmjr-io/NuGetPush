@@ -31,7 +31,7 @@ jobs:
         git-token: ${{ secrets.GITHUB_TOKEN }}
         git-username: dgmjr
         git-nuget-endpoint: ${{ vars.GIT_NUGET_ENDPOINT }}
-        private-nuget-endpoint: ${{ vars.FAGET_ENDPOINT_URL }}
+        private-nuget-endpoint: ${{ vars.FAGET_ENDPOINT }}
         private-nuget-api-key: ${{ secrets.FAGET_API_KEY }}
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
         repo: dgmjr-io/NuGetPush
@@ -44,7 +44,7 @@ jobs:
         git-token: ${{ secrets.GITHUB_TOKEN }}
         git-username: dgmjr
         git-nuget-endpoint: ${{ vars.GIT_NUGET_ENDPOINT }}
-        private-nuget-endpoint: ${{ vars.FAGET_ENDPOINT_URL }}
+        private-nuget-endpoint: ${{ vars.FAGET_ENDPOINT }}
         private-nuget-api-key: ${{ secrets.FAGET_API_KEY }}
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
         repo: dgmjr-io/NuGetPush
