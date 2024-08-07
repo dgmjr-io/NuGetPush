@@ -19,73 +19,73 @@ using NuGetPush.Tasks.Extensions;
 public class DetermineIfPackageExists() : NuGetPackageTaskBase
 {
     [Required]
-    public string PackagePath { get; set; }
+public string PackagePath { get; set; }
 
-    [Output]
-    public bool PackageExists { get; private set; }
+[Output]
+public bool PackageExists { get; private set; }
 
-    public string PackageId => PackagePath.GetPackageId();
+public string PackageId => PackagePath.GetPackageId();
 
-    public string PackageVersion => PackagePath.GetPackageVersion();
+public string PackageVersion => PackagePath.GetPackageVersion();
 
-    public NuGetVersion NuGetVersion => NuGetVersion.Parse(PackageVersion);
+public NuGetVersion NuGetVersion => NuGetVersion.Parse(PackageVersion);
 
-    public override bool Execute()
+public override bool Execute()
+{
+    try
     {
-        try
-        {
-            return ValidateParameters();
-        }
-        catch (Exception ex)
-        {
-            Log.LogErrorFromException(ex);
-            return false;
-        }
+        return ValidateParameters();
     }
-
-    public virtual bool DoesPackageExist()
+    catch (Exception ex)
     {
-        try
-        {
-            var psi = new ProcessStartInfo("nuget", ["search", "-s", Source, PackageId, "-PreRelease"])
-            {
-                RedirectStandardOutput = true
-            };
-            var ps = Process.Start(psi);
-            ps.WaitForExit();
-            return !ps.StandardOutput.EndOfStream;
-
-            // TODO: Make this work with the NuGet API
-            // // Get the package metadata resource from the repository
-            // var resource = await Repository.GetResourceAsync<PackageMetadataResource>();
-
-            // // Find all versions of the package
-            // var packageMetadata = await resource.GetMetadataAsync(
-            //     PackageId,
-            //     true,
-            //     true,
-            //     new SourceCacheContext(),
-            //     Logger,
-            //     CancellationToken.None
-            // );
-
-            // // Check if the specific version exists
-            // foreach (var metadata in packageMetadata.Select(metadata => metadata.Identity))
-            // {
-            //     if (
-            //         metadata.Id.Equals(PackageId, OrdinalIgnoreCase)
-            //         && metadata.Version == NuGetVersion
-            //     )
-            //     {
-            //         return true;
-            //     }
-            // }
-        }
-        catch (Exception ex)
-        {
-            Log.LogErrorFromException(ex);
-        }
-
+        Log.LogErrorFromException(ex);
         return false;
     }
+}
+
+public virtual bool DoesPackageExist()
+{
+    try
+    {
+        var psi = new ProcessStartInfo("nuget", ["search", "-s", Source, PackageId, "-PreRelease"])
+        {
+            RedirectStandardOutput = true
+        };
+        var ps = Process.Start(psi);
+        ps.WaitForExit();
+        return !ps.StandardOutput.EndOfStream;
+
+        // TODO: Make this work with the NuGet API
+        // // Get the package metadata resource from the repository
+        // var resource = await Repository.GetResourceAsync<PackageMetadataResource>();
+
+        // // Find all versions of the package
+        // var packageMetadata = await resource.GetMetadataAsync(
+        //     PackageId,
+        //     true,
+        //     true,
+        //     new SourceCacheContext(),
+        //     Logger,
+        //     CancellationToken.None
+        // );
+
+        // // Check if the specific version exists
+        // foreach (var metadata in packageMetadata.Select(metadata => metadata.Identity))
+        // {
+        //     if (
+        //         metadata.Id.Equals(PackageId, OrdinalIgnoreCase)
+        //         && metadata.Version == NuGetVersion
+        //     )
+        //     {
+        //         return true;
+        //     }
+        // }
+    }
+    catch (Exception ex)
+    {
+        Log.LogErrorFromException(ex);
+    }
+
+    return false;
+}
 }
