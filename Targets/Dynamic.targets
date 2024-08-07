@@ -1,0 +1,34 @@
+<!--
+ * Dynamic.targets
+ *     Created: 2024-07-28T20:14:36-04:00
+ *    Modified: 2024-07-28T20:14:37-04:00
+ *      Author: David G. Moore, Jr. <david@dgmjr.io>
+ *   Copyright: © 2022 - 2024 David G. Moore, Jr., All Rights Reserved
+ *     License: MIT (https://opensource.org/licenses/MIT)
+-->
+
+<Project>
+  <UsingTask TaskName="NuGetPush.Tasks.GenerateDynamicTargets" AssemblyFile="$(NuGetPushDll)" Condition="Exists($(NuGetPushDll))" />
+
+  <Target Name="GenerateDynamicTargets" AfterTargets="Pack" DependsOnTargets="Pack;GetPackageTargetPath;SetPackageExists">
+    <Message Text="Generating temporary targets file..." Importance="high" />
+
+    <GenerateDynamicTargets PackagePath="$(PackageTargetPath)" ProjectFile="$(MSBuildProjectFullPath)" DynamicTargetsProjectFile="$(DynamicTargetsProjectFile)" />
+
+    <Warning Text="Generated temporary targets file: $(DynamicTargetsProjectFile)" />
+    <Warning Text="MSBuildProjectFullPath: $(MSBuildProjectFullPath)" />
+
+    <GetNuGetSources ProjectFile="$(MSBuildProjectFullPath)">
+      <Output TaskParameter="NuGetSources" ItemName="NuGetSource" />
+    </GetNuGetSources>
+
+    <Warning Text="NuGet sources: @(NuGetSource->'%(Name)', ', ')" />
+  </Target>
+
+  <Import Project="$(DynamicTargetsProjectFile)" Condition="Exists($(DynamicTargetsProjectFile))" />
+
+  <Target Name="DeleteTemporaryTargetsFile" AfterTargets="AfterBuild,Compile" DependsOnTargets="AfterBuild">
+    <Message Text="Deleting temporary targets file..." Importance="high" />
+    <Delete Files="$(DynamicTargetsProjectFile)" />
+  </Target>
+</Project>

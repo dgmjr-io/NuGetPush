@@ -1,0 +1,20 @@
+<!--
+ * PushBaGet.targets
+ *     Created: 2024-07-28T19:26:00-04:00
+ *    Modified: 2024-07-28T19:26:00-04:00
+ *      Author: David G. Moore, Jr. <david@dgmjr.io>
+ *   Copyright: © 2022 - 2024 David G. Moore, Jr., All Rights Reserved
+ *     License: MIT (https://opensource.org/licenses/MIT)
+-->
+
+<Project>
+  <Target Name="PushFaGet" DependsOnTargets="Pack;MinVer;SetPackageExists" Condition="'$(GeneratePackageOnBuild)' == 'true'">
+    <DeletePackage PackageId="$(PackageId)" PackageVersion="$(PackageVersion)" Source="FaGet" ProjectFile="$(MSBuildProjectFullPath)" />
+    <PushPackage PackagePath="$(PackageTargetPath)" Source="FaGet" ProjectFile="$(MSBuildProjectFullPath)" />
+    <!-- <Warning Text="Deleting package $(PackageId) version $(PackageVersion) from FaGet..." />
+    <Exec Command="echo 'y' | dotnet nuget delete $(PackageId) $(PackageVersion) -s FaGet -k $(BAGET_API_KEY)" IgnoreExitCode="true" />
+    <Exec Command="pwsh -Command Read-Host" />
+    <Warning Text="Pushing package $(PackageId) version $(PackageVersion) to FaGet..." />
+    <Exec Command="dotnet nuget push '$(PackageTargetPath)' -s FaGet -k $(BAGET_API_KEY)" Condition="Exists('$(PackageTargetPath)')" /> -->
+  </Target>
+</Project>

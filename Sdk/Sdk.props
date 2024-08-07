@@ -1,13 +1,10 @@
 <!--
  * Sdk.props
- *
- *   Created: 2022-11-27-05:39:27
- *   Modified: 2022-12-05-04:12:36
- *
- *   Author: David G. Moore, Jr. <david@dgmjr.io>
- *
- *   Copyright © 2022-2023 David G. Moore, Jr., All Rights Reserved
- *      License: MIT (https://opensource.org/licenses/MIT)
+ *     Created: 2023-02-25T23:13:13-05:00
+ *    Modified: 2024-08-03T17:43:22-04:00
+ *      Author: David G. Moore, Jr. <david@dgmjr.io>
+ *   Copyright: © 2022 - 2024 David G. Moore, Jr., All Rights Reserved
+ *     License: MIT (https://opensource.org/licenses/MIT)
 -->
 
 <Project>
@@ -21,10 +18,23 @@
     <GitHubOrg />
     <!-- <NuGetPushDll Condition="'$(MSBuildProjectName)' == 'NuGetPush'">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../bin/Local/netstandard2.0/NuGetPush.dll'))</NuGetPushDll>
     <NuGetPushDll Condition="'$(MSBuildProjectName)' != 'NuGetPush'">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../lib/netstandard2.0/NuGetPush.dll'))</NuGetPushDll> -->
-    <NuGetPushDll>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../lib/netstandard2.0/NuGetPush.dll'))</NuGetPushDll>
+    <NuGetPushDll Condition="'$(NuGetPushDll)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../lib/NuGetPush.dll'))</NuGetPushDll>
   </PropertyGroup>
-  <UsingTask TaskName="NuGetPush.Tasks.Push" AssemblyFile="$(NuGetPushDll)" />
-  <UsingTask TaskName="NuGetPush.Tasks.DeletePackage" AssemblyFile="$(NuGetPushDll)" />
-  <UsingTask TaskName="NuGetPush.Tasks.DeleteAndPush" AssemblyFile="$(NuGetPushDll)" />
-  <UsingTask TaskName="NuGetPush.Tasks.GetNuGetApiKey" AssemblyFile="$(NuGetPushDll)" />
+  <PropertyGroup>
+    <NuGetPushAzureArtifactsIsEnabled Condition="'$(NuGetPushAzureArtifactsIsEnabled)' == ''">true</NuGetPushAzureArtifactsIsEnabled>
+    <NuGetPushFaGetIsEnabled Condition="'$(NuGetPushFaGetIsEnabled)' == ''">true</NuGetPushFaGetIsEnabled>
+    <NuGetPushLiGetIsEnabled Condition="'$(NuGetPushLiGetIsEnabled)' == ''">true</NuGetPushLiGetIsEnabled>
+    <NuGetPushGitHubIsEnabled Condition="'$(NuGetPushGitHubIsEnabled)' == ''">true</NuGetPushGitHubIsEnabled>
+    <NuGetPushLocalIsEnabled Condition="'$(NuGetPushLocalIsEnabled)' == ''">true</NuGetPushLocalIsEnabled>
+  </PropertyGroup>
+  <UsingTask TaskName="NuGetPush.Tasks.PushPackage" AssemblyFile="$(NuGetPushDll)" Condition="Exists($(NuGetPushDll))" />
+  <UsingTask TaskName="NuGetPush.Tasks.DeletePackage" AssemblyFile="$(NuGetPushDll)" Condition="Exists($(NuGetPushDll))" />
+  <UsingTask TaskName="NuGetPush.Tasks.DeleteAndPush" AssemblyFile="$(NuGetPushDll)" Condition="Exists($(NuGetPushDll))" />
+  <UsingTask TaskName="NuGetPush.Tasks.GetNuGetApiKey" AssemblyFile="$(NuGetPushDll)" Condition="Exists($(NuGetPushDll))" />
+  <UsingTask TaskName="NuGetPush.Tasks.GetNuGetSources" AssemblyFile="$(NuGetPushDll)" Condition="Exists($(NuGetPushDll))" />
+  <UsingTask TaskName="NuGetPush.Tasks.GenerateDynamicTargets" AssemblyFile="$(NuGetPushDll)" Condition="Exists($(NuGetPushDll))" />
+  <UsingTask TaskName="NuGetPush.Tasks.DetermineIfPackageExists" AssemblyFile="$(NuGetPushDll)" Condition="Exists($(NuGetPushDll))" />
+  <PropertyGroup>
+    <DynamicTargetsProjectFile Condition="'$(DynamicTargetsProjectFile)' == ''">$([MSBuild]::EnsureTrailingSlash($(MSBuildProjectDirectory)))$([MSBuild]::EnsureTrailingSlash($(IntermediateOutputPath)))NuGet.Dynamic.targets</DynamicTargetsProjectFile>
+  </PropertyGroup>
 </Project>

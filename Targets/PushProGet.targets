@@ -1,5 +1,5 @@
 <Project>
-  <Target Name="PushProGet" DependsOnTargets="Pack;MinVer" Condition="'$(GeneratePackageOnBuild)' == 'true'">
+  <Target Name="PushProGet" DependsOnTargets="Pack;MinVer;SetPackageExists" Condition="'$(GeneratePackageOnBuild)' == 'true' And '$(NuGetPushProGetIsEnabled)' == 'true'">
     <Exec Command="echo 'Deleting package $(PackageId) $(PackageVersion) from ProGet...';" IgnoreExitCode="true"
       Condition="'$(PackageExists)' != ''" />
     <Exec Command="dotnet nuget delete $(PackageId) $(PackageVersion) -s ProGet --non-interactive -k '$env:PROGET_API_KEY'" IgnoreExitCode="true"

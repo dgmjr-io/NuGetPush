@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Define the regex pattern for .nupkg files
+nupkgRegex='^(?:.*/)?(.+)\.([0-9]+\.[0-9]+\.[0-9]+(?:-[\w.-]+)?)\.nupkg$'
+
+# Function to get the Package ID
+function Get_PackageId {
+  local packagePath="$1"
+  if [[ $packagePath =~ $nupkgRegex ]]; then
+    echo "${BASH_REMATCH[1]}"
+  else
+    echo "The package path does not match the expected pattern." >&2
+    return 1
+  fi
+}
+
+# Function to get the Package Version
+function Get_PackageVersion {
+  local packagePath="$1"
+  if [[ $packagePath =~ $nupkgRegex ]]; then
+    echo "${BASH_REMATCH[2]}"
+  else
+    echo "The package path does not match the expected pattern." >&2
+    return 1
+  fi
+}
+
+# Function to push the package
+function Push_Package {
+  local packagePath="$1"
+  local source="${2:-nuget.org}"
+  local apiKey="${3:-$API_KEY}"
+
+  if [ -z "$apiKey" ]; then
+    echo "ApiKey is required" >&2
+    return 1
+  fi
+
+  local packageId
+  local packageVersion
+
+  packageId=$(Get_PackageId "$packagePath")
+  if [ $? -ne 0 ]; then
+    return 1
+  fi
+  packageVersion=$(Get_PackageVersion "$packagePath")
+  if [ $? -ne 0 ]; then
+    return 1
+  fi
+
+  yes | dotnet nuget delete "$packageId" "$packageVersion" --source "$source" --api-key "$apiKey" -y
+  dotnet nuget push "$packagePath" --api-key "$apiKey" --source "$source"
+}
+
+Push_Package "$1" "$2" "$3"

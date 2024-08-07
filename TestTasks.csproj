@@ -1,0 +1,24 @@
+<!--
+ * TestTasks.csproj
+ *     Created: 2024-07-28T23:19:20-04:00
+ *    Modified: 2024-07-28T23:19:20-04:00
+ *      Author: David G. Moore, Jr. <david@dgmjr.io>
+ *   Copyright: © 2022 - 2024 David G. Moore, Jr., All Rights Reserved
+ *     License: MIT (https://opensource.org/licenses/MIT)
+-->
+
+<Project Sdk="Dgmjr.NET.Sdk">
+  <Sdk Name="NuGetPush" />
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="@(Compile)" />
+  </ItemGroup>
+  <Target Name="GetNuGetSources" BeforeTargets="Build">
+    <GetNuGetSources>
+      <Output TaskParameter="NuGetSources" ItemName="NuGetSources" />
+    </GetNuGetSources>
+    <Warning Text="NuGetSources: @(NuGetSources)" />
+  </Target>
+</Project>

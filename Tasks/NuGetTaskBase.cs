@@ -1,37 +1,48 @@
 namespace NuGetPush.Tasks;
-using MSBTask = Microsoft.Build.Utilities.Task;
-using Microsoft.Build.Utilities;
-using NuGet.Configuration;
-using NuGet.Protocol;
-using System.Resources;
 
-using NuGetSettings = NuGet.Configuration.Settings;
-using Microsoft.Build.Framework;
-
-using NuGet.Commands;
-
-public abstract class NuGetTaskBase : MSBTask
+public abstract class NuGetTaskBase() : MSBTask
 {
-    public NuGetTaskBase(ResourceManager taskResources, string helpKeywordPrefix) : base(taskResources, helpKeywordPrefix) { }
-    public NuGetTaskBase() : base() { }
-    [Required]
-    public string Source { get; set; }
+    protected NuGetTaskBase(ResourceManager taskResources)
+        : this()
+    {
+        Log.TaskResources = taskResources;
+    }
+
+    protected NuGetTaskBase(ResourceManager taskResources, string helpKeywordPrefix)
+        : this(taskResources)
+    {
+        Log.HelpKeywordPrefix = helpKeywordPrefix;
+    }
 
     [Required]
-    public string MSBuildProjectDirectory { get; set; }
+    public virtual string ProjectFile { get; set; }
 
-    private NuGet.Configuration.ISettings _settings;
-    protected ISettings Settings => _settings ??= NuGetSettings.LoadDefaultSettings(MSBuildProjectDirectory);
+    private string _projectDirectory;
+    public string? ProjectDirectory => _projectDirectory ??= Path.GetDirectoryName(ProjectFile);
 
-    protected PackageSourceProvider PackageSourceProvider => new(Settings);
+    private ISettings _settings;
+    protected ISettings Settings =>
+        _settings ??= NuGetSettings.LoadDefaultSettings(ProjectDirectory);
+
+    private PackageSourceProvider _packageSourceProvider;
+    protected PackageSourceProvider PackageSourceProvider =>
+        _packageSourceProvider ??= new(Settings);
 
     private NuGetMSBuildTaskLogger? _logger;
-    public virtual NuGetMSBuildTaskLogger Logger { get => _logger ??= new(this); set => _logger = value; }
-
-    private string? _apiKey;
-    public virtual string ApiKey
+    public virtual NuGetMSBuildTaskLogger Logger
     {
-        get => _apiKey ??= SettingsUtility.GetValueForAddItem(Settings, ConfigurationConstants.ApiKeys, PackageSourceProvider.ResolveAndValidateSource(Source));
-        set => _apiKey = value;
+        get => _logger ??= new(this);
+        set => _logger = value;
+    }
+
+    protected virtual bool ValidateParameters()
+    {
+        if (IsNullOrEmpty(ProjectFile))
+        {
+            Log.LogError("ProjectFile is required.");
+            return false;
+        }
+
+        return true;
     }
 }

@@ -1,5 +1,5 @@
 <Project>
-  <Target Name="PushProGetPrerelease" DependsOnTargets="Pack;MinVer" Condition="'$(GeneratePackageOnBuild)' == 'true' And false">
+  <Target Name="PushProGetPrerelease" DependsOnTargets="Pack;MinVer;SetPackageExists" Condition="'$(GeneratePackageOnBuild)' == 'true' And false">
     <Exec Command="echo 'Deleting package $(PackageId) $(PackageVersion) from ProGet...';" IgnoreExitCode="true"
       Condition="'$(PackageExists)' != ''" />
     <Exec Command="dotnet nuget delete $(PackageId) $(PackageVersion) -s ProGetPrerelease --non-interactive -k '$env:PROGET_API_KEY'" IgnoreExitCode="true"

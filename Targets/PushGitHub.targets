@@ -1,5 +1,5 @@
 <Project>
-  <Target Name="EnsureGitHubToken" DependsOnTargets="Pack;MinVer" Condition="'$(GeneratePackageOnBuild)' == 'true'">
+  <Target Name="EnsureGitHubToken" DependsOnTargets="Pack;MinVer;SetPackageExists" Condition="'$(GeneratePackageOnBuild)' == 'true' And '$(NuGetPushGitHubIsEnabled)' == 'true'">
     <Exec Command="gh auth token" ConsoleToMSBuild="true" IgnoreExitCode="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitHubAuthToken" />
     </Exec>

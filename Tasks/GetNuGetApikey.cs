@@ -1,21 +1,12 @@
-namespace NuGetPush.Tasks;
-using MSBTask = Microsoft.Build.Utilities.Task;
-using NuGet.Configuration;
-using NuGet.Protocol;
-using System.Resources;
+// namespace NuGetPush.Tasks;
 
-using NuGetSettings = NuGet.Configuration.Settings;
-using Microsoft.Build.Framework;
+// public class GetNuGetApiKey : NuGetTaskBase
+// {
+//     [Output]
+//     public virtual string ApiKey => base.ApiKey;
 
-using NuGet.Commands;
-
-public class GetNuGetApiKey : NuGetTaskBase
-{
-    [Output]
-    public override string ApiKey => base.ApiKey;
-
-    public override bool Execute()
-    {
-        return true;
-    }
-}
+//     public override bool Execute()
+//     {
+//         return true;
+//     }
+// }

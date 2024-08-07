@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PushLocalIsEnabled>true</PushLocalIsEnabled>
+    <PushFaGetIsEnabled>true</PushFaGetIsEnabled>
   </PropertyGroup>
 </Project>

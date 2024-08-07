@@ -1,30 +1,59 @@
+using System;
+
 namespace NuGetPush.Tasks;
-using MSBTask = Microsoft.Build.Utilities.Task;
-using NuGet.Configuration;
-using NuGet.Protocol;
-using System.Resources;
 
-using NuGetSettings = NuGet.Configuration.Settings;
-using Microsoft.Build.Framework;
-
-using NuGet.Commands;
-
-public class DeletePackage : NuGetTaskBase
+public class DeletePackage : NuGetPackageTaskBase
 {
-    public DeletePackage(ResourceManager taskResources, string helpKeywordPrefix) : base(taskResources, helpKeywordPrefix) { }
-    public DeletePackage() : base() { }
+    public DeletePackage(ResourceManager taskResources, string helpKeywordPrefix)
+        : base(taskResources, helpKeywordPrefix) { }
+
+    public DeletePackage()
+        : base() { }
 
     [Required]
     public string PackageId { get; set; }
 
     [Required]
-    public string Version { get; set; }
+    public string PackageVersion { get; set; }
 
     public override bool Execute()
     {
-        // Logger.LogWarning($"Deleting {PackageId} version {Version} from source {Source}...");
-        DeleteRunner.Run(Settings, PackageSourceProvider, PackageId, Version, Source, ApiKey, true, false, (string s) => true, Logger);
-        // Logger.LogWarning($"Done.");
+        if (!ValidateParameters())
+        {
+            return false;
+        }
+
+        Logger.LogWarning($"Deleting {PackageId} version {PackageVersion} from source {Source}...");
+        DeleteRunner.Run(
+            Settings,
+            PackageSourceProvider,
+            PackageId,
+            PackageVersion,
+            Source,
+            ApiKey,
+            true,
+            false,
+            _ => true,
+            Logger
+        );
+        Logger.LogWarning("Done.");
         return true;
+    }
+
+    protected override bool ValidateParameters()
+    {
+        if (IsNullOrEmpty(PackageId))
+        {
+            Log.LogError("PackageId is required.");
+            return false;
+        }
+
+        if (IsNullOrEmpty(PackageVersion))
+        {
+            Log.LogError("PackageVersion is required.");
+            return false;
+        }
+
+        return base.ValidateParameters();
     }
 }

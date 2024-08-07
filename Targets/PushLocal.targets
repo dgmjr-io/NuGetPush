@@ -1,7 +1,7 @@
 <Project>
-  <Target Name="PushLocal" AfterTargets="Pack" DependsOnTargets="Pack;GetPackageVersion" Condition="'$(GeneratePackageOnBuild)' == 'true' And '$(DesignTimeBuild)' != 'true' And ('$(Configuration)' == 'Local' Or $(InitialTargets.Contains('PushLocal')))">
-    <Exec Command="dotnet nuget delete $(PackageId) $(PackageVersion) -s Local --non-interactive" ContinueOnError="true" IgnoreExitCode="true" />
-    <Exec Command="dotnet nuget push $(PackageTargetPath) -s Local --skip-duplicate" Condition="Exists('$(PackageTargetPath)')" IgnoreExitCode="true" />
+  <Target Name="PushLocal" AfterTargets="Pack" DependsOnTargets="Pack;GetPackageVersion;SetPackageExists" Condition="'$(GeneratePackageOnBuild)' == 'true' And '$(DesignTimeBuild)' != 'true' And '$(NuGetPushLocalIsEnabled)' == 'true' And ('$(Configuration)' == 'Local' Or $(InitialTargets.Contains('PushLocal')))">
+    <DeletePackage PackageId="$(PackageId)" PackageVersion="$(PackageVersion)" Source="Local" ProjectFile="$(MSBuildProjectFullPath)" />
+    <PushPackage PackagePath="$(PackageTargetPath)" Source="Local" ProjectFile="$(MSBuildProjectFullPath)" />
     <!-- <NuGetPush.Tasks.DeleteAndPush
       Source="Local"
       MSBuildProjectDirectory="$(MSBuildProjectDirectory)"
@@ -11,4 +11,3 @@
       PackagePath="$(PackageTargetPath)" /> -->
   </Target>
 </Project>
-

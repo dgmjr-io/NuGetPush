@@ -1,5 +1,5 @@
 <Project>
-  <Target Name="PushDgmjrNuGetSoftware" AfterTargets="Pack" DependsOnTargets="Pack;GetPackageVersion" Condition="'$(GeneratePackageOnBuild)' == 'true' And '$(DesignTimeBuild)' != 'true' And ('$(Configuration)' == 'Local' Or $(InitialTargets.Contains('PushLocal')))">
+  <Target Name="PushDgmjrNuGetSoftware" AfterTargets="Pack" DependsOnTargets="Pack;GetPackageVersion;SetPackageExists" Condition="'$(GeneratePackageOnBuild)' == 'true' And '$(DesignTimeBuild)' != 'true' And '$(PushDgmjrNuGetSoftwareIsEnabled)' == 'true' And ('$(Configuration)' == 'Local' Or $(InitialTargets.Contains('PushLocal')))">
     <NuGetPush.Tasks.GetNuGetApiKey
       Source="dgmjr.nuget.software"
       MSBuildProjectDirectory="$(MSBuildProjectDirectory)">

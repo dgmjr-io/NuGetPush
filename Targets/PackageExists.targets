@@ -1,0 +1,17 @@
+<!--
+ * PackageExists.props
+ *     Created: 2024-08-02T03:38:56-04:00
+ *    Modified: 2024-08-02T03:38:57-04:00
+ *      Author: David G. Moore, Jr. <david@dgmjr.io>
+ *   Copyright: © 2022 - 2024 David G. Moore, Jr., All Rights Reserved
+ *     License: MIT (https://opensource.org/licenses/MIT)
+-->
+
+<Project>
+  <Target Name="SetPackageExists" DependsOnTargets="Pack" AfterTargets="Pack">
+    <PropertyGroup>
+      <PackageExists Condition="Exists($(PackageTargetPath))">true</PackageExists>
+      <PackageExists Condition="!Exists($(PackageTargetPath))">false</PackageExists>
+    </PropertyGroup>
+  </Target>
+</Project>

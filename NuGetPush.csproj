@@ -13,8 +13,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="./Sdk/Sdk.props" />
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <Description>This is a simple MSBuild task that allows you to push a NuGet package to a NuGet server.</Description>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <GitHubOrg>dgmjr-io</GitHubOrg>
@@ -23,22 +23,39 @@
     <ProjectGuid>2498EED9-9158-41BD-9D4A-246A70A1D9E2</ProjectGuid>
     <EmitNuspec>true</EmitNuspec>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>lib/</OutputPath>
+    <PackageOutputPath>nupkg/</PackageOutputPath>
+    <PushLocalIsEnabled>true</PushLocalIsEnabled>
+    <PushFaGetIsEnabled>true</PushFaGetIsEnabled>
   </PropertyGroup>
   <ItemGroup>
     <PackageFile Include="./Sdk/*" PackagePath="Sdk/%(Filename)%(Extension)" />
     <PackageFile Include="./Targets/**/*" PackagePath="Targets/%(Filename)%(Extension)" />
     <PackageFile Include="./Scripts/**/*" PackagePath="Scripts/%(RecursiveDir)%(Filename)%(Extension)" />
-    <PackageFile Include="$(OutputPath)$(TargetFramework)/*.*" PackagePath="lib/%(Filename)%(Extension)" />
+    <PackageFile Include="$(OutputPath)/*.*" PackagePath="lib/%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
-    <PackageTag Include="GitHub" />
-    <PackageTag Include="GitHub-Packages" />
-    <PackageTag Include="NuGet" />
-    <PackageTag Include="Azure" />
     <PackageTag Include="Azure-Artifacts" />
+    <PackageTag Include="Azure" />
+    <PackageTag Include="GitHub-Packages" />
+    <PackageTag Include="GitHub" />
     <PackageTag Include="NuGet-Push" />
+    <PackageTag Include="NuGet" />
     <PackageTag Include="Packaging" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Microsoft.Build.Framework" />
+    <Using Include="Microsoft.Build.Utilities.Task" Alias="MSBTask" />
+    <Using Include="Microsoft.Build.Utilities" />
+    <Using Include="NuGet.Commands" />
+    <Using Include="NuGet.Common" />
+    <Using Include="NuGet.Configuration.Settings" Alias="NuGetSettings" />
+    <Using Include="NuGet.Configuration" />
+    <Using Include="NuGet.Protocol" />
+    <Using Include="System.IO" />
+    <Using Include="System.Resources" />
+    <Using Include="System.Threading.Tasks.Task" Alias="TTask" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MSBuild.Usings" IncludeAssets="Build;BuildTransitive;BuildMultitargeting;Runtime;Compile" ExcludeAssets="ContentFiles;Native;Analyzers" PrivateAssets="None" />
@@ -56,6 +73,9 @@
   </Target>
   <Target Name="CleanJSOutput" AfterTargets="Clean">
     <Delete Files="$(MSBuildThisFileDirectory)Scripts/js/*" />
+  </Target>
+  <Target Name="TestNuGetPush" AfterTargets="AfterBuild">
+    <MSBuild Projects="./TestTasks.csproj" />
   </Target>
   <Import Project="./Sdk/Sdk.targets" />
 </Project>
