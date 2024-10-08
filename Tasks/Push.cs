@@ -23,7 +23,7 @@ public class PushPackage : NuGetPackageTaskBase
         Logger.LogWarning($"Pushing {PackageId} version {PackageVersion} to source {Source}...");
         // PushRunner.Run(Settings, PackageSourceProvider, [PackagePath], Source, ApiKey, null, null, 10, false, true, false, true, Logger);
         List<string> args = ["nuget", "push", PackagePath, "-s", Source];
-        if(!IsNullOrEmpty(ApiKey))
+        if (!IsNullOrEmpty(ApiKey))
         {
             args.AddRange(["-k", ApiKey]);
         }

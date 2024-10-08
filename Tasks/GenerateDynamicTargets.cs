@@ -19,125 +19,142 @@ public partial class GenerateDynamicTargets() : NuGetTaskBase
 {
     public string? MSBuildProjectDirectory => Path.GetDirectoryName(ProjectFile);
 
-    private string _packageId;
-    public string PackageId
+private string _packageId;
+public string PackageId
+{
+    get => _packageId ??= PackagePath.GetPackageId();
+    set => _packageId = value;
+}
+
+private string _packageVersion;
+public string PackageVersion
+{
+    get => _packageVersion ??= PackagePath.GetPackageVersion();
+    set => _packageVersion = value;
+}
+
+[Required]
+public string PackagePath { get; set; }
+
+public string DynamicTargetsProjectFile { get; set; }
+
+protected GenerateDynamicTargets(ResourceManager taskResources)
+    : this()
+{
+    Log.TaskResources = taskResources;
+}
+
+protected GenerateDynamicTargets(ResourceManager taskResources, string helpKeywordPrefix)
+    : this(taskResources)
+{
+    Log.HelpKeywordPrefix = helpKeywordPrefix;
+}
+
+public override bool Execute()
+{
+    if (!ValidateParameters())
     {
-        get => _packageId ??= PackagePath.GetPackageId();
-        set => _packageId = value;
+        return false;
     }
 
-    private string _packageVersion;
-    public string PackageVersion
-    {
-        get => _packageVersion ??= PackagePath.GetPackageVersion();
-        set => _packageVersion = value;
-    }
+    DynamicTargetsProjectFile ??= Constants.DefaultDynamicTargetsFilePath;
 
-    [Required]
-    public string PackagePath { get; set; }
+    Log.LogWarning($"Generating dynamic targets file '{DynamicTargetsProjectFile}'...");
 
-    public string DynamicTargetsProjectFile { get; set; }
+    var sources = new List<ITaskItem>();
 
-    protected GenerateDynamicTargets(ResourceManager taskResources)
-        : this()
-    {
-        Log.TaskResources = taskResources;
-    }
+    var packageSourceProvider = new PackageSourceProvider(Settings);
+    var packageSources = packageSourceProvider
+        .LoadPackageSources()
+        .Where(source => source.IsEnabled);
 
-    protected GenerateDynamicTargets(ResourceManager taskResources, string helpKeywordPrefix)
-        : this(taskResources)
-    {
-        Log.HelpKeywordPrefix = helpKeywordPrefix;
-    }
+    // Retrieve API keys
+    var credentialService = new PackageSourceCredentialService(Settings);
 
-    public override bool Execute()
-    {
-        if (!ValidateParameters())
-        {
-            return false;
-        }
-
-        DynamicTargetsProjectFile ??= Constants.DefaultDynamicTargetsFilePath;
-
-        Log.LogWarning($"Generating dynamic targets file '{DynamicTargetsProjectFile}'...");
-
-        var sources = new List<ITaskItem>();
-
-        var packageSourceProvider = new PackageSourceProvider(Settings);
-        var packageSources = packageSourceProvider
-            .LoadPackageSources()
-            .Where(source => source.IsEnabled);
-
-        // Retrieve API keys
-        var credentialService = new PackageSourceCredentialService(Settings);
-
-        var dynamicTargetsSource = $"""
-        <Project>
-            {Join(
-            """
+    var dynamicTargetsSource = $"""
+    < Project >
+            {
+        Join(
+       """
 
 
-            <!-- ******************* -->
+       < !--*******************-->
 
 
-            """, packageSources.Select(source =>
-            $"""
-            <PropertyGroup>
-                <Push{SanitizeName(source.Name)}IsEnabled Condition="'$(Push{SanitizeName(source.Name)}IsEnabled)' == ''">false</Push{SanitizeName(source.Name)}IsEnabled>
-            </PropertyGroup>
+       """, packageSources.Select(source =>
 
-            <Target Name="Push{SanitizeName(source.Name)}" AfterTargets="Pack" DependsOnTargets="Pack" Condition="'$(GeneratePackageOnBuild)' == 'true' And '$(Push{SanitizeName(source.Name)}IsEnabled)' == 'true'">
-                <DetermineIfPackageExists PackagePath="{PackagePath}" ProjectFile="{ProjectFile}" Source="{source.Source}">
-                    <Output TaskParameter="PackageExists" PropertyName="PackageExists" />
-                </DetermineIfPackageExists>
+       $"""
+       < PropertyGroup >
 
-                <PropertyGroup>
-                    <PackageExists>false</PackageExists> <!-- default it to false -->
-                    <PackageExists Condition="'%(Lines.Identity)' != ''">true</PackageExists>
-                </PropertyGroup>
+           < Push{ SanitizeName(source.Name)}
+        IsEnabled Condition = "'$(Push{SanitizeName(source.Name)}IsEnabled)' == ''" > false </ Push{ SanitizeName(source.Name)}
+        IsEnabled >
 
-                <Warning Text="Package {PackageId} version {PackageVersion} already exists in source {source.Name}." Condition="$(PackageExists)" />
-                <Warning Text="Package {PackageId} version {PackageVersion} does not exist in source {source.Name}." Condition="!$(PackageExists)" />
+</ PropertyGroup >
 
-                <DeletePackage
-                    PackageId="{PackageId}"
-                    PackageVersion="{PackageVersion}"
-                    Source="{source.Source}"
-                    ApiKey="{credentialService.GetApiKey(source)}"
-                    ProjectFile="{ProjectFile}"
-                    Condition="$(PackageExists)" />
 
-                <PushPackage
-                    Source="{source.Source}"
-                    ApiKey="{credentialService.GetApiKey(source)}"
-                    PackagePath="{PackagePath}"
-                    ProjectFile="{ProjectFile}" />
-            </Target>
+< Target Name = "Push{SanitizeName(source.Name)}" AfterTargets = "Pack" DependsOnTargets = "Pack" Condition = "'$(GeneratePackageOnBuild)' == 'true' And '$(Push{SanitizeName(source.Name)}IsEnabled)' == 'true'" >
+
+< DetermineIfPackageExists PackagePath = "{PackagePath}" ProjectFile = "{ProjectFile}" Source = "{source.Source}" >
+
+< Output TaskParameter = "PackageExists" PropertyName = "PackageExists" />
+
+</ DetermineIfPackageExists >
+
+
+< PropertyGroup >
+
+< PackageExists > false </ PackageExists > < !--default it to false-- >
+
+< PackageExists Condition = "'%(Lines.Identity)' != ''" > true </ PackageExists >
+
+</ PropertyGroup >
+
+
+< Warning Text = "Package {PackageId} version {PackageVersion} already exists in source {source.Name}." Condition = "$(PackageExists)" />
+
+< Warning Text = "Package {PackageId} version {PackageVersion} does not exist in source {source.Name}." Condition = "!$(PackageExists)" />
+
+
+< DeletePackage
+                    PackageId = "{PackageId}"
+                    PackageVersion = "{PackageVersion}"
+                    Source = "{source.Source}"
+                    ApiKey = "{credentialService.GetApiKey(source)}"
+                    ProjectFile = "{ProjectFile}"
+                    Condition = "$(PackageExists)" />
+
+                < PushPackage
+                    Source = "{source.Source}"
+                    ApiKey = "{credentialService.GetApiKey(source)}"
+                    PackagePath = "{PackagePath}"
+                    ProjectFile = "{ProjectFile}" />
+            </ Target >
             """
             ))}
-        </Project>
+        </ Project >
         """;
 
         File.WriteAllText(DynamicTargetsProjectFile, dynamicTargetsSource);
 
-        return true;
-    }
+    return true;
+}
 
-    protected override bool ValidateParameters()
+protected override bool ValidateParameters()
+{
+    if (IsNullOrEmpty(PackagePath))
     {
-        if (IsNullOrEmpty(PackagePath))
-        {
-            Log.LogError("PackagePath is required.");
-            return false;
-        }
-
-        return base.ValidateParameters();
+        Log.LogError("PackagePath is required.");
+        return false;
     }
 
-    private const string SanitizationRegexString = @"[^A-Za-z_]";
+    return base.ValidateParameters();
+}
 
-    [GeneratedRegex(SanitizationRegexString)]
-    private static partial Regex SanitizationRegex();
+private const string SanitizationRegexString = @"[^A-Za-z_]";
 
-    public static string SanitizeName(string name) => SanitizationRegex().Replace(name, "");
+[GeneratedRegex(SanitizationRegexString)]
+private static partial Regex SanitizationRegex();
+
+public static string SanitizeName(string name) => SanitizationRegex().Replace(name, "");
 }
