@@ -29,7 +29,7 @@ public partial class GenerateDynamicTargets() : NuGetTaskBase
     private string _packageVersion;
     public string PackageVersion
     {
-        get => _packageVersion ??= PackagePath.GetPackageId();
+        get => _packageVersion ??= PackagePath.GetPackageVersion();
         set => _packageVersion = value;
     }
 
@@ -73,20 +73,23 @@ public partial class GenerateDynamicTargets() : NuGetTaskBase
 
         var dynamicTargetsSource = $"""
         <Project>
-            {Join("\n", packageSources.Select(source =>
+            {Join(
+            """
+
+
+            <!-- ******************* -->
+
+
+            """, packageSources.Select(source =>
             $"""
             <PropertyGroup>
                 <Push{SanitizeName(source.Name)}IsEnabled Condition="'$(Push{SanitizeName(source.Name)}IsEnabled)' == ''">false</Push{SanitizeName(source.Name)}IsEnabled>
             </PropertyGroup>
 
-            <Target Name="Push{SanitizeName(source.Name)}" AfterTargets="Pack" Condition="'$(GeneratePackageOnBuild)' == 'true' And '$(Push{SanitizeName(source.Name)}IsEnabled)' == 'true'">
-                <!--<DetermineIfPackageExists PackagePath="{PackagePath}" ProjectFile="{ProjectFile}" Source="{source.Source}">
+            <Target Name="Push{SanitizeName(source.Name)}" AfterTargets="Pack" DependsOnTargets="Pack" Condition="'$(GeneratePackageOnBuild)' == 'true' And '$(Push{SanitizeName(source.Name)}IsEnabled)' == 'true'">
+                <DetermineIfPackageExists PackagePath="{PackagePath}" ProjectFile="{ProjectFile}" Source="{source.Source}">
                     <Output TaskParameter="PackageExists" PropertyName="PackageExists" />
-                </DetermineIfPackageExists>-->
-
-                <Exec Command="nuget search -s {source.Name} {PackageId} -PreRelease | grep {PackageId}" ConsoleToMsBuild="true" IgnoreExitCode="true">
-                    <Output TaskParameter="ConsoleOutput" ItemName="ConsoleOutput"/>
-                </Exec>
+                </DetermineIfPackageExists>
 
                 <PropertyGroup>
                     <PackageExists>false</PackageExists> <!-- default it to false -->

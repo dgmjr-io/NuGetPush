@@ -1,5 +1,7 @@
 namespace NuGetPush.Tasks;
 
+using System.Configuration;
+
 public class DeleteAndPush : NuGetPackageTaskBase
 {
     [Required]
@@ -26,6 +28,7 @@ public class DeleteAndPush : NuGetPackageTaskBase
         determineIfPackageExists.Execute();
         if (determineIfPackageExists.PackageExists)
         {
+            Log.LogWarning($"Package {PackageId} already exists in source {Source}. Deleting it.");
             new DeletePackage(TaskResources, HelpKeywordPrefix)
             {
                 Source = Source,

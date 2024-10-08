@@ -2,6 +2,9 @@ namespace NuGetPush.Tasks;
 
 public abstract class NuGetTaskBase() : MSBTask
 {
+    protected static readonly ResourceManager DefaultResourceManager =
+        new("NuGetPush.Tasks", typeof(NuGetTaskBase).Assembly);
+
     protected NuGetTaskBase(ResourceManager taskResources)
         : this()
     {

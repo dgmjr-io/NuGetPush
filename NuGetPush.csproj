@@ -10,7 +10,7 @@
  *      License: MIT (https://opensource.org/licenses/MIT)
 -->
 
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Dgmjr.NET.Sdk">
   <Import Project="./Sdk/Sdk.props" />
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -74,8 +74,8 @@
   <Target Name="CleanJSOutput" AfterTargets="Clean">
     <Delete Files="$(MSBuildThisFileDirectory)Scripts/js/*" />
   </Target>
-  <Target Name="TestNuGetPush" AfterTargets="AfterBuild">
+  <!-- <Target Name="TestNuGetPush" AfterTargets="AfterBuild">
     <MSBuild Projects="./TestTasks.csproj" />
-  </Target>
+  </Target> -->
   <Import Project="./Sdk/Sdk.targets" />
 </Project>

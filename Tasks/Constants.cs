@@ -12,6 +12,8 @@ namespace NuGetPush.Tasks;
 public static class Constants
 {
     public const string DefaultDynamicTargetsFilePath = "NuGet.Dynamic.targets";
+    public const string NupkgRegexString =
+        @"^(?:.*/)?(?<PackageId>.+)\.(?<Version>(?<Major>\d+)\.(?<Minor>\d+)\.(?<Build>\d+)(?:-(?<Prerelease>[\w.-]+))?)\.nupkg$";
 
     public static class MetadataNames
     {

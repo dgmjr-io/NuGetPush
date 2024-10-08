@@ -1,8 +1,8 @@
+namespace NuGetPush.Tasks;
+
 using System;
 
 using NuGet.Protocol.Core.Types;
-
-namespace NuGetPush.Tasks;
 
 public abstract class NuGetPackageTaskBase() : NuGetTaskBase
 {

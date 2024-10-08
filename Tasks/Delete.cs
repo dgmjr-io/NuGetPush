@@ -2,13 +2,9 @@ using System;
 
 namespace NuGetPush.Tasks;
 
-public class DeletePackage : NuGetPackageTaskBase
+public class DeletePackage(ResourceManager taskResources, string? helpKeywordPrefix = default) : NuGetPackageTaskBase(taskResources, helpKeywordPrefix)
 {
-    public DeletePackage(ResourceManager taskResources, string helpKeywordPrefix)
-        : base(taskResources, helpKeywordPrefix) { }
-
-    public DeletePackage()
-        : base() { }
+    public DeletePackage() : this(new ResourceManager("NuGetPush.Tasks", typeof(DeletePackage).Assembly)) { }
 
     [Required]
     public string PackageId { get; set; }
@@ -24,18 +20,21 @@ public class DeletePackage : NuGetPackageTaskBase
         }
 
         Logger.LogWarning($"Deleting {PackageId} version {PackageVersion} from source {Source}...");
-        DeleteRunner.Run(
-            Settings,
-            PackageSourceProvider,
-            PackageId,
-            PackageVersion,
-            Source,
-            ApiKey,
-            true,
-            false,
-            _ => true,
-            Logger
-        );
+        var psi = new ProcessStartInfo("dotnet", ["nuget", "delete", PackageId, PackageVersion, "-s", Source, "-k", ApiKey]);
+        var p = Process.Start(psi);
+        p.WaitForExit();
+        // DeleteRunner.Run(
+        //     Settings,
+        //     PackageSourceProvider,
+        //     PackageId,
+        //     PackageVersion,
+        //     Source,
+        //     ApiKey,
+        //     true,
+        //     false,
+        //     _ => true,
+        //     Logger
+        // );
         Logger.LogWarning("Done.");
         return true;
     }

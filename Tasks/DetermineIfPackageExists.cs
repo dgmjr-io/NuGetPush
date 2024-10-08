@@ -47,6 +47,7 @@ public class DetermineIfPackageExists() : NuGetPackageTaskBase
     {
         try
         {
+            List<string> args = ["nuget", "push", PackagePath, "-s", Source];
             var psi = new ProcessStartInfo("nuget", ["search", "-s", Source, PackageId, "-PreRelease"])
             {
                 RedirectStandardOutput = true

@@ -1,12 +1,11 @@
 namespace NuGetPush.Tasks.Extensions;
 
+using static Constants;
+
 public static partial class NuGetStringExtensions
 {
-    public const string NupkgRegexString =
-        @"^(?:.*/)?(?<PackageId>.+)\.(?<Version>(?<Major>\d+)\.(?<Minor>\d+)\.(?<Build>\d+)(?:-(?<Prerelease>[\w.-]+))?)\.nupkg$";
-
     [GeneratedRegex(NupkgRegexString)]
-    private static partial Regex NupkgRegex();
+    private static partial Regx NupkgRegex();
 
     public static string GetPackageId(this string packagePath) =>
         NupkgRegex().IsMatch(packagePath)
