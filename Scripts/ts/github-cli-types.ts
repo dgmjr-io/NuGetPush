@@ -31,8 +31,15 @@ export interface ApiMessage {
   documentation_url: string;
 }
 
-export type PackageType = "nuget" | "npm" | "docker" | "maven" | "rubygems" | "container";
+export type PackageType =
+  | "nuget"
+  | "npm"
+  | "docker"
+  | "maven"
+  | "rubygems"
+  | "container";
 
-
-export const toSemVer = (stringVer: string | undefined) => new SemVer(stringVer ?? "0.0.0");
-export const toPackageType = (stringType: string | undefined) => stringType as PackageType;
+export const toSemVer = (stringVer: string | undefined) =>
+  new SemVer(stringVer ?? "0.0.0");
+export const toPackageType = (stringType: string | undefined) =>
+  stringType as PackageType;
